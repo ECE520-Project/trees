@@ -1,5 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::fmt;
 
 use crate::base::{QueryableTreeNode, QueryableTree};
 
@@ -12,37 +13,49 @@ pub enum NodeColor {
     Black,
 }
 
-pub struct RedBlackTreeNode<T> {
-    pub key: T,
+pub struct RedBlackTreeNode<T: Ord + Copy + fmt::Debug> {
+    pub data: T,
     pub color: NodeColor,
     parent: RBNodeLink<T>,
     left: RBNodeLink<T>,
     right: RBNodeLink<T>,
 }
 
-pub struct RedBlackTree<T: Ord> {root: RBNodeLink<T>}
+pub struct RedBlackTree<T: Ord + Copy + fmt::Debug> {root: RBNodeLink<T>}
 
-impl <T: Ord> QueryableTreeNode for RedBlackTreeNode<T> {
+impl <T: Ord + Copy + fmt::Debug> QueryableTreeNode<T> for RedBlackTreeNode<T> {
     fn get_left(&self) -> &RBNodeLink<T> { return &self.left; }
     fn get_right(&self) -> &RBNodeLink<T> { return &self.right; }
+    fn get_data(&self) -> T { return self.data; }
 }
 
-impl <T: Ord> QueryableTree<RedBlackTreeNode<T>> for RedBlackTree<T> {
+impl <T: Ord + Copy + fmt::Debug> QueryableTree<T, RedBlackTreeNode<T>> for RedBlackTree<T> {
     fn get_root(&self) -> &RBNodeLink<T> {
         &self.root
     }
 }
 
-impl<T: Ord> RedBlackTree<T> {
+impl<T: Ord + Copy + fmt::Debug> RedBlackTree<T> {
+    // pub fn new() -> Self {
+    //     Self { root: None }
+    // }
     pub fn new(data: T) -> Self {
         Self {
             root: Some(Rc::new(RefCell::new(RedBlackTreeNode {
-                key: data,
+                data,
                 color: NodeColor::Red,
                 parent: None,
                 left: None,
                 right: None
             })))
         }
+    }
+
+    pub fn insert(&self, val: T) {
+        unimplemented!()
+    }
+
+    pub fn delete(&self, val: T) {
+        unimplemented!()
     }
 }
