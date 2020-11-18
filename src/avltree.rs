@@ -1,3 +1,4 @@
+use core::cmp::max;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
@@ -59,6 +60,15 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
             _ => {},
         }
     }
+    fn left_height(&self) -> usize {
+        self.left.as_ref().map_or(0, |left| left.borrow().height())
+    }
+    fn right_height(&self) -> usize {
+        self.right.as_ref().map_or(0, |right| right.borrow().height())
+    }
+    fn update_height(&mut self) {
+        self.height = 1 + max(self.left_height(), self.right_height());
+    }
     //balance factor
     fn balance_factor(&self) -> i8 {
         let left_height = self.get_left().as_ref().map(
@@ -93,9 +103,9 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         self.left = new_left_tree;
 
         if let Some(node) = self.left.as_mut() {
-            node.borrow_mut().height();
+            node.borrow_mut().update_height();
         }
-        self.height();
+        self.update_height();
         true
     }
     //rotate left function
@@ -117,9 +127,9 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         self.right = new_right_tree;
 
         if let Some(node) = self.right.as_mut() {
-            node.borrow_mut().height();
+            node.borrow_mut().update_height();
         }
-        self.height();
+        self.update_height();
         true
     }
     //rebalance after deletion
