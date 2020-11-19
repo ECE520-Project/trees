@@ -1,3 +1,13 @@
+//! Binary search tree
+//!
+//! You can generate a binary search tree, and insert or delete nodes.
+//!
+//! ```
+//! use trees::bstree::BinarySearchTree;
+//! // use this trait if you want to query information
+//! use trees::base::QueryableTree;
+//! ```
+
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
@@ -7,7 +17,9 @@ use crate::base::{QueryableTreeNode, QueryableTree};
 type RcRefBaseNode<T> = Rc<RefCell<BinarySearchTreeNode<T>>>;
 type BaseNodeLink<T> = Option<RcRefBaseNode<T>>;
 
+/// Node struct for [BinarySearchTree](struct.BinarySearchTree.html) struct
 pub struct BinarySearchTreeNode<T: Ord + Copy + fmt::Debug> {
+    /// Data stored in the node
     pub data: T,
     left: BaseNodeLink<T>,
     right: BaseNodeLink<T>,
@@ -20,6 +32,7 @@ impl <T: Ord + Copy + fmt::Debug> QueryableTreeNode<T> for BinarySearchTreeNode<
 }
 
 impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
+    /// Create a new node, which will be called by [BinarySearchTree](struct.BinarySearchTree.html)
     fn new(data: T) -> BaseNodeLink<T> {
         Some(Rc::new(RefCell::new(Self{
             data,
@@ -44,6 +57,7 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
     }
 }
 
+/// An implementation of [Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)
 pub struct BinarySearchTree<T: Ord + Copy + fmt::Debug> {root: BaseNodeLink<T>}
 
 impl <T: Ord + Copy + fmt::Debug> QueryableTree<T, BinarySearchTreeNode<T>> for BinarySearchTree<T> {
@@ -62,10 +76,30 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
     //         })))
     //     }
     // }
+    /// Create a new Binary Search Tree
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use trees::bstree::BinarySearchTree;
+    ///
+    /// let mut bst = BinarySearchTree::new();
+    /// ```
     pub fn new() -> Self {
         Self{ root: None }
     }
 
+
+    /// Insert a new value to the tree
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use trees::bstree::BinarySearchTree;
+    ///
+    /// let mut bst = BinarySearchTree::new();
+    /// bst.insert(1);
+    /// ```
     pub fn insert(&mut self, new_val: T) {
         if self.root.is_none() {
             self.root = Some(Rc::new(RefCell::new(BinarySearchTreeNode{
@@ -78,6 +112,16 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
         }
     }
 
+    /// Delete a value from the tree
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use trees::bstree::BinarySearchTree;
+    ///
+    /// let mut bst = BinarySearchTree::new();
+    /// bst.delete(1);
+    /// ```
     pub fn delete(&self, val: T) {
         unimplemented!()
     }
