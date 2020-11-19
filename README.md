@@ -1,4 +1,4 @@
-# Hao's First Version of Trees
+# Trees
 
 This is a course project for ECE 522, which implements Binary Search Tree, Red-black Tree, and AVL Tree.
 
