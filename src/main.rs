@@ -33,7 +33,7 @@ fn main() {
     print!("print_inorder: ");
     avl.print_inorder();
 
-    println!("============== Red-Black Tree ==============");
+    println!("============== Red-black Tree ==============");
     let rbt = RedBlackTree::new(2);
     println!("height: {}", rbt.height());
     println!("is_empty: {}", rbt.is_empty());
