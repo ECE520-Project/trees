@@ -32,7 +32,10 @@
 //! ```
 //! use trees::prelude::*;
 //!
-//! let rbt = RedBlackTree::new(2);
+//! let mut rbt = RedBlackTree::new();
+//! rbt.insert(3);
+//! rbt.insert(5);
+//! rbt.insert(0);
 //! println!("height: {}", rbt.height());
 //! println!("is_empty: {}", rbt.is_empty());
 //! println!("count_leaves: {}", rbt.count_leaves());
@@ -48,7 +51,10 @@
 //! ```
 //! use trees::prelude::*;
 //!
-//! let avl = AVLTree::new(2);
+//! let mut avl = AVLTree::new();
+//! avl.insert(3);
+//! avl.insert(5);
+//! avl.insert(0);
 //! println!("height: {}", avl.height());
 //! println!("is_empty: {}", avl.is_empty());
 //! println!("count_leaves: {}", avl.count_leaves());

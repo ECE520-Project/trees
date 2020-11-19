@@ -2,7 +2,7 @@ use trees::prelude::*;
 
 fn main() {
     println!("============== Red-black Tree ==============");
-    let rbt = RedBlackTree::new(2);
+    let mut rbt = RedBlackTree::new(2);
     println!("height: {}", rbt.height());
     println!("is_empty: {}", rbt.is_empty());
     println!("count_leaves: {}", rbt.count_leaves());

@@ -11,6 +11,10 @@ fn main() {
     bst.insert(2);
     bst.insert(3);
     bst.insert(5);
+    bst.insert(10);
+    bst.insert(7);
+    bst.insert(9);
+    bst.insert(4);
     println!("height: {}", bst.height());
     println!("is_empty: {}", bst.is_empty());
     println!("count_leaves: {}", bst.count_leaves());
@@ -22,7 +26,16 @@ fn main() {
     bst.print_inorder();
 
     println!("============== AVL Tree ==============");
-    let avl = AVLTree::new(2);
+    let mut avl = AVLTree::new();
+    avl.insert(1);
+    avl.insert(0);
+    avl.insert(2);
+    avl.insert(3);
+    avl.insert(5);
+    avl.insert(10);
+    avl.insert(7);
+    avl.insert(9);
+    avl.insert(4);
     println!("height: {}", avl.height());
     println!("is_empty: {}", avl.is_empty());
     println!("count_leaves: {}", avl.count_leaves());
@@ -45,26 +58,3 @@ fn main() {
     print!("print_inorder: ");
     rbt.print_inorder();
 }
-
-
-// use std::cell::RefCell;
-// use std::rc::Rc;
-//
-// type RcRefBaseNode<T> = Rc<RefCell<BinarySearchTreeNode<T>>>;
-// type BaseNodeLink<T> = Option<RcRefBaseNode<T>>;
-//
-// pub struct BinarySearchTreeNode<T: Ord> {
-//     pub data: T,
-//     left: BaseNodeLink<T>,
-//     right: BaseNodeLink<T>,
-// }
-//
-// impl <T: Ord> BinarySearchTreeNode<T> {
-//     fn min(&self) -> &T {
-//         self.left.as_ref().map_or(&self.data, |x| x.borrow_mut().min())
-//     }
-// }
-//
-// fn main() {
-//
-// }
