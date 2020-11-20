@@ -13,6 +13,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
 use std::mem::{replace, swap};
+use std::cmp::{Ord, Ordering};
 
 use crate::base::{QueryableTreeNode, QueryableTree};
 
@@ -43,7 +44,6 @@ impl <T: Ord + Copy + fmt::Debug> QueryableTree<T, AVLTreeNode<T>> for AVLTree<T
         &self.root
     }
 }
-use std::cmp::{Ord, Ordering};
 
 impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
     /// Create a new node
@@ -74,6 +74,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
             },
             _ => {},
         }
+        self.rebalance();
     }
 
     /// Get height of left child
