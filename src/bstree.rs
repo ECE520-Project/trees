@@ -126,3 +126,16 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
         unimplemented!()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_demo() {
+        let mut bst = BinarySearchTree::new();
+        assert_eq!(bst.height(), 0);
+        bst.insert(1);
+        assert_eq!(bst.height(), 1);
+    }
+}

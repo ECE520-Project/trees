@@ -195,7 +195,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
     /// ```
     /// use trees::avltree::AVLTree;
     ///
-    /// let mut avl = AVLTree::new();
+    /// let mut avl: AVLTree<i64> = AVLTree::new();
     /// ```
     pub fn new() -> Self {
         Self { root: None }
