@@ -76,102 +76,104 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         }
         self.rebalance();
     }
-    /// Delete a node
-    fn delete(&mut self, node: AVLTreeNode<T>){
+    // /// Delete a node
+    // fn delete(&mut self, mut node: AVLTreeNode<T>, data:T) {
        
-        let mut previous_ptrs = Vec::<*mut AVLTreeNode<T>>::new();
+    //     let mut previous_ptrs = Vec::<*mut AVLTreeNode<T>>::new();
        
-        match node.data.cmp(&self.data){
-            // If the key to be deleted is smaller than the root's key, 
-            //then it lies in left subtree 
-            Ordering::Less => {
-                match self.left {
-                    None => self.left = Some(Rc::new(RefCell::new(node))),
-                    Some(ref mut l) => l.borrow_mut().delete(node),
-                }
-            },
-            // If the key to be deleted is greater than the root's key, 
-            //then it lies in right subtree
-            Ordering::Greater => {
-                match self.right {
-                    None => self.right = Some(Rc::new(RefCell::new(node))),
-                    Some(ref mut r) => r.borrow_mut().delete(node),
-                }
-            },
-            // if key is same as root's key, then  
-            // This is the node to be deleted 
-            Ordering::Equal =>{
-                let deleted_value = if node.left.is_none() || node.right.is_none(){
-                    // delete node
-                    if let Some(left_node) = node.left.take() {
-                        //get back the ownership by deleting with replace
-                        replace(&mut node, *left_node.borrow_mut()).data
-                    } else if let Some(right_node) = node.right.take() {
-                        replace(&mut node, *right_node.borrow_mut()).data
-                    } else {
-                        // Case1 : Delete a node with ZERO child
-                        if let Some(previous_ptr) = previous_ptrs.pop() {
-                            let prev_node = unsafe { &mut *previous_ptr };
+    //     match node.data.cmp(&self.data){
+    //         // If the key to be deleted is smaller than the root's key, 
+    //         //then it lies in left subtree 
+    //         Ordering::Less => {
+    //             if let Some(successor) = node.right.take() {
+    //                 node.right = delete(data, successor);
+    //                 node.update_height();
+    //                 node.rebalance();
+    //             }
+    //         },
+    //         // If the key to be deleted is greater than the root's key, 
+    //         //then it lies in right subtree
+    //         Ordering::Greater => {
+    //             if let Some(successor) = node.left.take() {
+    //                 node.left = delete(data, successor);
+    //                 node.update_height();
+    //                 node.rebalance();
+    //             }
+    //         },
+    //         // if key is same as root's key, then  
+    //         // This is the node to be deleted 
+    //         Ordering::Equal =>{
+    //             let deleted_value = if node.left.is_none() || node.right.is_none(){
+    //                 // delete node
+    //                 if let Some(left_node) = node.left.take() {
+    //                     //get back the ownership by deleting with replace
+    //                     replace(&mut node, *left_node.borrow_mut()).data
+    //                 } else if let Some(right_node) = node.right.take() {
+    //                     replace(&mut node, *right_node.borrow_mut()).data
+    //                 } else {
+    //                     // Case1 : Delete a node with ZERO child
+    //                     if let Some(previous_ptr) = previous_ptrs.pop() {
+    //                         let prev_node = unsafe { &mut *previous_ptr };
                             
-                            let inner_value = if let Some(ref left_node) = prev_node.left {
-                                if left_node.borrow_mut().data == node.data {
-                                    prev_node.left.take().unwrap().borrow_mut().data
-                                } else {
-                                    prev_node.right.take().unwrap().borrow_mut().data
-                                }
-                            } else {
-                                prev_node.right.take().unwrap().borrow_mut().data
-                            };
-                            // Update the parent node height and balance
-                            prev_node.update_height();
-                            prev_node.rebalance();
-                            // Return the value
-                            inner_value
-                        } else {
-                            // Case2 : it is the parent, so take the root node
-                            unimplemented!()
-                            //. //?? (reach root node and delete it)
-                        }
-                    }       
-                }
-                else{
-                    // Case 3: node with two children: replace the deleted node 
-                    // with the node of the next value or the leftmost child of the right child of the deleted node
-                    let right_tree = &mut node.right;
-                    let mut next_tree = right_tree;
-                    let mut inner_ptrs = Vec::<*mut AVLTreeNode<T>>::new();
-                    //Keep moving the current node to the left child until it has none
-                    while let Some(next_left_node) = next_tree {
-                        if next_left_node.borrow_mut().left.is_some() {
-                            inner_ptrs.push(&mut *next_left_node.borrow_mut());
-                        }
-                        next_tree = &mut next_left_node.borrow_mut().left;
-                    }
-                    // We don't use next_tree but instead the tracked nodes as basis
-                    let parent_left_node = unsafe { &mut *inner_ptrs.pop().unwrap() };
-                    let mut leftmost_node = parent_left_node.left.take().unwrap();
+    //                         let inner_value = if let Some(ref left_node) = prev_node.left {
+    //                             if left_node.borrow_mut().data == node.data {
+    //                                 prev_node.left.take().unwrap().borrow_mut().data
+    //                             } else {
+    //                                 prev_node.right.take().unwrap().borrow_mut().data
+    //                             }
+    //                         } else {
+    //                             prev_node.right.take().unwrap().borrow_mut().data
+    //                         };
+    //                         // Update the parent node height and balance
+    //                         prev_node.update_height();
+    //                         prev_node.rebalance();
+    //                         // Return the value
+    //                         inner_value
+    //                     } else {
+    //                         // Case2 : it is the parent, so take the root node
+    //                         unimplemented!()
+    //                         //. //?? (reach root node and delete it)
+    //                     }
+    //                 }       
+    //             }
+    //             else{
+    //                 // Case 3: node with two children: replace the deleted node 
+    //                 // with the node of the next value or the leftmost child of the right child of the deleted node
+    //                 let right_tree = &mut node.right;
+    //                 let mut next_tree = right_tree;
+    //                 let mut inner_ptrs = Vec::<*mut AVLTreeNode<T>>::new();
+    //                 //Keep moving the current node to the left child until it has none
+    //                 while let Some(next_left_node) = next_tree {
+    //                     if next_left_node.borrow_mut().left.is_some() {
+    //                         inner_ptrs.push(&mut *next_left_node.borrow_mut());
+    //                     }
+    //                     next_tree = &mut next_left_node.borrow_mut().left;
+    //                 }
+    //                 // We don't use next_tree but instead the tracked nodes as basis
+    //                 let parent_left_node = unsafe { &mut *inner_ptrs.pop().unwrap() };
+    //                 let leftmost_node = parent_left_node.left.take().unwrap();
 
-                    // Replace the target node value with the current node value
-                    let inner_value = replace(&mut node.data, leftmost_node.borrow_mut().data);
-                    // Replace the current node with the right child if it has
-                    replace(&mut parent_left_node.left, leftmost_node.borrow_mut().right.take());
-                    // Updates the nodes in order
-                    parent_left_node.update_height();
-                    parent_left_node.rebalance();
+    //                 // Replace the target node value with the current node value
+    //                 let inner_value = replace(&mut node.data, leftmost_node.borrow_mut().data);
+    //                 // Replace the current node with the right child if it has
+    //                 replace(&mut parent_left_node.left, leftmost_node.borrow_mut().right.take());
+    //                 // Updates the nodes in order
+    //                 parent_left_node.update_height();
+    //                 parent_left_node.rebalance();
 
-                    for node_ptr in inner_ptrs.into_iter().rev() {
-                        let nd = unsafe { &mut *node_ptr };
-                        nd.update_height();
-                        nd.rebalance();
-                    }
-                    node.update_height();
-                    node.rebalance();
+    //                 for node_ptr in inner_ptrs.into_iter().rev() {
+    //                     let nd = unsafe { &mut *node_ptr };
+    //                     nd.update_height();
+    //                     nd.rebalance();
+    //                 }
+    //                 node.update_height();
+    //                 node.rebalance();
 
-                    inner_value
-                };
-            }
-        }
-    }
+    //                 inner_value
+    //             };
+    //         }
+    //     }
+    // }
 
     /// Get height of left child
     fn left_height(&self) -> usize {
@@ -320,7 +322,112 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
     /// let mut avl = AVLTree::new();
     /// avl.delete(1);
     /// ```
-    pub fn delete(&self, val: T) {
-        unimplemented!()
+    pub fn delete(&self, data: T) {
+        self.remove(&data);
+    }
+    pub fn remove(&self, data: &T) -> Option<T> {
+        let mut prev_ptrs = Vec::<*mut AVLTreeNode<T>>::new();
+        let mut current_tree = &self.root;
+        let mut target_value = None;
+
+        while let Some(current_node) = current_tree {
+            match current_node.borrow().data.cmp(&data) {
+                Ordering::Less => {
+                    prev_ptrs.push(&mut *current_node.borrow());
+                    current_tree = &mut current_node.borrow().right;
+                }
+                Ordering::Equal => {
+                    target_value = Some(&mut *current_node);
+                    break;
+                }
+                Ordering::Greater => {
+                    prev_ptrs.push(&mut *current_node.borrow());
+                    current_tree = &mut current_node.borrow().left;
+                }
+            };
+        }
+        if target_value.is_none() {
+            return None;
+        }
+        let mut target_node = target_value.unwrap();
+
+        let taken_value = if target_node.as_ref().borrow().left.is_none() || target_node.as_ref().borrow().right.is_none() {
+            if let Some(left_node) = target_node.as_ref().borrow_mut().left.take() {
+                replace(target_node, left_node).borrow_mut().data
+            } else if let Some(right_node) = target_node.as_ref().borrow_mut().right.take() {
+                replace(target_node, *right_node).borrow_mut().data
+            } else if let Some(prev_ptr) = prev_ptrs.pop() {
+                let prev_node = unsafe {&mut *prev_ptr };
+
+                let inner_value = if let Some(left_node) = prev_node.left.as_ref() {
+                    if left_node.borrow_mut().data == target_node.borrow_mut().data {
+                        prev_node.left.take().unwrap().borrow_mut().data
+                    } else {
+                        prev_node.right.take().unwrap().borrow_mut().data
+                    }
+                } else {
+                    prev_node.right.take().unwrap().borrow_mut().data
+                };
+
+                prev_node.update_height();
+                prev_node.rebalance();
+
+                inner_value
+            } else {
+                self.root.take().unwrap().borrow_mut().data
+            }
+        } else {
+            let right_tree = &mut target_node.borrow_mut().right;
+
+            if right_tree.as_ref().unwrap().borrow_mut().left.is_none() {
+                let mut right_node = right_tree.take().unwrap();
+
+                let inner_value = replace(&mut target_node.borrow_mut().data, right_node.borrow_mut().data);
+                replace(&mut target_node.borrow_mut().right, right_node.borrow_mut().right.take());
+
+                target_node.borrow_mut().update_height();
+                target_node.borrow_mut().rebalance();
+
+                inner_value
+            } else {
+                let mut next_tree = right_tree;
+                let mut inner_ptrs = Vec::<*mut AVLTreeNode<T>>::new();
+
+                while let Some(next_left_node) = next_tree {
+                    if next_left_node.borrow_mut().left.is_some() {
+                        inner_ptrs.push(&mut *next_left_node.borrow_mut());
+                    }
+                    next_tree = &mut next_left_node.borrow_mut().left;
+                }
+
+                let parent_left_node = unsafe { &mut *inner_ptrs.pop().unwrap() };
+                let mut leftmost_node = parent_left_node.left.take().unwrap();
+
+                let inner_value = replace(&mut target_node.borrow_mut().data, leftmost_node.borrow_mut().data);
+                replace(&mut parent_left_node.left, leftmost_node.borrow_mut().right.take());
+
+                parent_left_node.update_height();
+                parent_left_node.rebalance();
+
+                for node_ptr in inner_ptrs.into_iter().rev() {
+                    let node = unsafe { &mut *node_ptr };
+                    node.update_height();
+                    node.rebalance();
+                }
+
+                target_node.borrow_mut().update_height();
+                target_node.borrow_mut().rebalance();
+
+                inner_value
+            }
+        };
+
+        for node_ptr in prev_ptrs.into_iter().rev() {
+            let node = unsafe { &mut *node_ptr };
+            node.update_height();
+            node.rebalance();
+        }
+
+        Some(taken_value)
     }
 }
