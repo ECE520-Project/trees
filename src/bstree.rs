@@ -40,7 +40,7 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
             right: None
         })))
     }
-
+    /// Insert a node 
     fn insert(&mut self, new_value: T) {
         if self.data == new_value {
             return
@@ -52,6 +52,50 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
             Some(node) => node.borrow_mut().insert(new_value),
             None => {
                 *new_node = Self::new(new_value);
+            }
+        }
+    }
+    /// Delete a node 
+    fn delete(current: &mut BaseNodeLink<T>, data: T) {
+        if let Some(node) = current {
+            if data == node.borrow_mut().data{
+                Self::delete_node(current);
+            } else if data < node.borrow_mut().data {
+                Self::delete(&mut node.borrow_mut().left, data)
+            } else {
+                Self::delete(&mut node.borrow_mut().right, data)
+            }
+        }
+    }
+
+    fn delete_node(current: &mut BaseNodeLink<T>) {
+        if let Some(node) = current {
+            if node.borrow_mut().right.is_some() {
+                let mut sptr = &mut node.borrow_mut().right as *mut BaseNodeLink<T>;
+                loop {
+                    let successor = unsafe { &mut *sptr };
+                    let snode = successor.as_mut().unwrap();
+                    if snode.borrow_mut().left.is_none() {
+                        std::mem::swap(&mut node.borrow_mut().data, &mut snode.borrow_mut().data);
+                        Self::delete_node(successor);
+                        break;
+                    }
+                    sptr = &mut snode.borrow_mut().left;
+                }
+            } else if node.borrow_mut().left.is_some() {
+                let mut pptr = &mut node.borrow_mut().left as *mut BaseNodeLink<T>;
+                loop {
+                    let predecessor = unsafe { &mut *pptr };
+                    let pnode = predecessor.as_mut().unwrap();
+                    if pnode.borrow_mut().right.is_none() {
+                        std::mem::swap(&mut node.borrow_mut().data, &mut pnode.borrow_mut().data);
+                        Self::delete_node(predecessor);
+                        break;
+                    }
+                    pptr = &mut pnode.borrow_mut().right;
+                }
+            } else {
+                *current = None;
             }
         }
     }
@@ -111,7 +155,6 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
             self.root.as_ref().unwrap().borrow_mut().insert(new_val);
         }
     }
-
     /// Delete a value from the tree
     ///
     /// # Example
@@ -122,7 +165,7 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
     /// let mut bst = BinarySearchTree::new();
     /// bst.delete(1);
     /// ```
-    pub fn delete(&self, val: T) {
-        unimplemented!()
+    pub fn delete(&mut self, val: T) {
+        BinarySearchTreeNode::delete(&mut self.root, val)
     }
 }
