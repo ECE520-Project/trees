@@ -319,7 +319,6 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
     /// ```
     /// use trees::avltree::AVLTree;
     ///
-    /// let mut avl = AVLTree::new();
     /// avl.delete(1);
     /// ```
     pub fn delete(&self, data: T) {
@@ -353,7 +352,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
 
         let taken_value = if target_node.as_ref().borrow().left.is_none() || target_node.as_ref().borrow().right.is_none() {
             if let Some(left_node) = target_node.as_ref().borrow_mut().left.take() {
-                replace(target_node, left_node).borrow_mut().data
+                replace(target_node, *left_node).borrow_mut().data
             } else if let Some(right_node) = target_node.as_ref().borrow_mut().right.take() {
                 replace(target_node, *right_node).borrow_mut().data
             } else if let Some(prev_ptr) = prev_ptrs.pop() {
