@@ -97,6 +97,19 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
         ).unwrap_or(false);
         return left_found || right_found
     }
+
+    /// Returns the length of the current node,
+    /// which will be called by
+    /// [QueryableTree.len](trait.QueryableTree.html#method.len)
+    fn len(&self) -> usize {
+        let left_len = self.get_left().as_ref().map(
+            |n| n.borrow().len()
+        ).unwrap_or(0);
+        let right_len = self.get_right().as_ref().map(
+            |n| n.borrow().len()
+        ).unwrap_or(0);
+        left_len + right_len + 1
+    }
 }
 
 /// Provides query functions for trees
@@ -264,6 +277,27 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         match self.get_root() {
             None => false,
             Some(node) => node.borrow().contains(value),
+        }
+    }
+
+    /// Returns the length of the tree
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use trees::bstree::BinarySearchTree;
+    /// use trees::base::QueryableTree;
+    ///
+    /// let mut tree = BinarySearchTree::new();
+    /// tree.insert(1);
+    /// tree.insert(10);
+    /// tree.insert(13);
+    /// println!("{}", tree.len());  // 3
+    /// ```
+    fn len(&self) -> usize {
+        match self.get_root() {
+            None => 0,
+            Some(node) => node.borrow().len(),
         }
     }
 }
