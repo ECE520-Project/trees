@@ -29,7 +29,6 @@
 //!
 //! ## Red-black Tree
 //!
-//! ```
 //! use trees::prelude::*;
 //!
 //! let mut rbt = RedBlackTree::new();
@@ -45,7 +44,7 @@
 //! println!("contains 10: {}", rbt.contains(0));
 //! print!("print_inorder: ");
 //! rbt.print_inorder();
-//! ```
+
 //!
 //! ## AVL Tree
 //! ```
