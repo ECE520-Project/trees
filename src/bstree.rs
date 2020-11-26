@@ -58,7 +58,6 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
         }
     }
 
-// <<<<<<< tests
     fn _delete_node_have_two_children(left: &RcRefBaseNode<T>) {
         let right_min = left.borrow().right.as_ref().unwrap().borrow().min();
         left.borrow_mut().delete(right_min);
@@ -86,22 +85,7 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
             }
         }
     }
-// =======
 
-    /// Delete a node 
-    // fn delete(current: &mut BaseNodeLink<T>, data: T) {
-    //     if let Some(node) = current {
-    //         if data == node.as_ref().borrow_mut().data{
-    //             Self::delete_node(current);
-    //         } else if data < node.as_ref().borrow().data {
-    //             Self::delete(&mut node.as_ref().borrow_mut().left, data)
-    //         } else {
-    //             Self::delete(&mut node.as_ref().borrow_mut().right, data)
-    //         }
-    //     }
-    // }
-
-// <<<<<<< tests
     fn _delete_left(&mut self, val: T) {
         if let Some(left) = self.left.as_ref() {
             if left.borrow().data == val {
@@ -124,7 +108,7 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
         }
     }
 
-//     /// Delete a node, which will be called by [BinarySearchTree](struct.BinarySearchTree.html)
+    /// Delete a node, which will be called by [BinarySearchTree](struct.BinarySearchTree.html)
     fn delete(&mut self, val: T) {
         match self.data.cmp(&val) {
             Ordering::Greater => self._delete_left(val),
@@ -132,39 +116,6 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
             _ => panic!("impossible!"),
         }
     }
-// =======
-    // fn delete_node(current: &mut BaseNodeLink<T>) {
-    //     if let Some(node) = current {
-    //         if node.borrow_mut().right.is_some() {
-    //             let mut sptr = &mut node.borrow_mut().right as *mut BaseNodeLink<T>;
-    //             loop {
-    //                 let successor = unsafe { &mut *sptr };
-    //                 let snode = successor.as_mut().unwrap();
-    //                 if snode.borrow_mut().left.is_none() {
-    //                     std::mem::swap(&mut node.borrow_mut().data, &mut snode.borrow_mut().data);
-    //                     Self::delete_node(successor);
-    //                     break;
-    //                 }
-    //                 sptr = &mut snode.borrow_mut().left;
-    //             }
-    //         } else if node.borrow_mut().left.is_some() {
-    //             let mut pptr = &mut node.borrow_mut().left as *mut BaseNodeLink<T>;
-    //             loop {
-    //                 let predecessor = unsafe { &mut *pptr };
-    //                 let pnode = predecessor.as_mut().unwrap();
-    //                 if pnode.borrow_mut().right.is_none() {
-    //                     std::mem::swap(&mut node.borrow_mut().data, &mut pnode.borrow_mut().data);
-    //                     Self::delete_node(predecessor);
-    //                     break;
-    //                 }
-    //                 pptr = &mut pnode.borrow_mut().right;
-    //             }
-    //         } else {
-    //             *current = None;
-    //         }
-    //     }
-    // }
-// >>>>>>> main
 }
 
 /// An implementation of [Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)
@@ -222,7 +173,6 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
     /// bst.delete(1);
     /// ```
     pub fn delete(&mut self, val: T) {
-// <<<<<<< tests
         if self.root.is_none() {
             return
         } else {
@@ -246,9 +196,6 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
                 }
             }
         }
-// =======
-        // BinarySearchTreeNode::delete(&mut self.root, val)
-// >>>>>>> main
     }
 }
 
@@ -268,11 +215,138 @@ mod test {
     }
 
     #[test]
+    fn test_count_leaves() {
+        let mut bst = BinarySearchTree::new();
+        assert_eq!(bst.count_leaves(), 0);
+        bst.insert(5);
+        assert_eq!(bst.count_leaves(), 1);
+        bst.insert(3);
+        assert_eq!(bst.count_leaves(), 1);
+        bst.insert(2);
+        assert_eq!(bst.count_leaves(), 1);
+        bst.insert(4);
+        assert_eq!(bst.count_leaves(), 2);
+        bst.insert(7);
+        assert_eq!(bst.count_leaves(), 3);
+        bst.insert(6);
+        assert_eq!(bst.count_leaves(), 3);
+        bst.insert(8);
+        assert_eq!(bst.count_leaves(), 4);
+    }
+
+    #[test]
+    fn test_height() {
+        let mut bst = BinarySearchTree::new();
+        assert_eq!(bst.height(), 0);
+        bst.insert(5);
+        assert_eq!(bst.height(), 1);
+        bst.insert(3);
+        assert_eq!(bst.height(), 2);
+        bst.insert(2);
+        assert_eq!(bst.height(), 3);
+        bst.insert(4);
+        assert_eq!(bst.height(), 3);
+        bst.insert(7);
+        assert_eq!(bst.height(), 3);
+        bst.insert(6);
+        assert_eq!(bst.height(), 3);
+        bst.insert(8);
+        assert_eq!(bst.height(), 3);
+        bst.insert(10);
+        assert_eq!(bst.height(), 4);
+    }
+
+    #[test]
+    fn test_is_empty() {
+        let mut bst = BinarySearchTree::new();
+        assert_eq!(bst.is_empty(), true);
+        bst.insert(5);
+        assert_eq!(bst.is_empty(), false);
+        bst.delete(5);
+        assert_eq!(bst.is_empty(), true);
+    }
+
+    #[test]
+    fn test_min() {
+        let mut bst = BinarySearchTree::new();
+        assert_eq!(bst.min(), None);
+        bst.insert(5);
+        assert_eq!(bst.min(), Some(5));
+        bst.insert(3);
+        assert_eq!(bst.min(), Some(3));
+        bst.insert(2);
+        assert_eq!(bst.min(), Some(2));
+        bst.insert(4);
+        assert_eq!(bst.min(), Some(2));
+        bst.insert(7);
+        assert_eq!(bst.min(), Some(2));
+        bst.insert(6);
+        assert_eq!(bst.min(), Some(2));
+        bst.insert(8);
+        assert_eq!(bst.min(), Some(2));
+    }
+
+    #[test]
+    fn test_max() {
+        let mut bst = BinarySearchTree::new();
+        assert_eq!(bst.max(), None);
+        bst.insert(5);
+        assert_eq!(bst.max(), Some(5));
+        bst.insert(3);
+        assert_eq!(bst.max(), Some(5));
+        bst.insert(2);
+        assert_eq!(bst.max(), Some(5));
+        bst.insert(4);
+        assert_eq!(bst.max(), Some(5));
+        bst.insert(7);
+        assert_eq!(bst.max(), Some(7));
+        bst.insert(6);
+        assert_eq!(bst.max(), Some(7));
+        bst.insert(8);
+        assert_eq!(bst.max(), Some(8));
+    }
+
+    #[test]
+    fn test_contains() {
+        let mut bst = BinarySearchTree::new();
+        assert_eq!(bst.contains(5), false);
+        bst.insert(5);
+        assert_eq!(bst.contains(5), true);
+        assert_eq!(bst.contains(3), false);
+        bst.insert(3);
+        assert_eq!(bst.contains(3), true);
+        assert_eq!(bst.contains(2), false);
+        bst.insert(2);
+        assert_eq!(bst.contains(2), true);
+        assert_eq!(bst.contains(4), false);
+        bst.insert(4);
+        assert_eq!(bst.contains(4), true);
+        assert_eq!(bst.contains(7), false);
+        bst.insert(7);
+        assert_eq!(bst.contains(7), true);
+        assert_eq!(bst.contains(6), false);
+        bst.insert(6);
+        assert_eq!(bst.contains(6), true);
+        assert_eq!(bst.contains(8), false);
+        bst.insert(8);
+        assert_eq!(bst.contains(8), true);
+    }
+
+    #[test]
     fn test_len() {
         let mut bst = BinarySearchTree::new();
-        bst.insert(0);
+        assert_eq!(bst.len(), 0);
+        bst.insert(5);
         assert_eq!(bst.len(), 1);
-        bst.delete(0);
+        bst.insert(3);
+        assert_eq!(bst.len(), 2);
+        bst.insert(2);
+        assert_eq!(bst.len(), 3);
+        bst.delete(5);
+        assert_eq!(bst.len(), 2);
+        bst.delete(3);
+        assert_eq!(bst.len(), 1);
+        bst.delete(2);
         assert_eq!(bst.len(), 0);
     }
 
