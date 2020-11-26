@@ -110,6 +110,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
     fn height(node: &AVLNodeLink<T>) -> u32  {
         return node.as_ref().map_or(0, |succ| succ.borrow().height)
     }
+    
     fn update_height(node:&mut AVLTreeNode<T>){
         node.height = cmp::max( Self::height(&node.left), Self::height(&node.right) )+1;
     }
