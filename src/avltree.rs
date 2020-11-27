@@ -274,6 +274,68 @@ mod test {
         let mut avl = AVLTree::<i32>::new();
     
     }
+
+    #[test]
+    fn insert_delete_inorder() {
+        let mut tree = AVLTree::new();
+        let tree_size = 1000;
+        for v in 0..tree_size {
+            tree.insert(v);
+        }
+        for (i, v) in (0..tree_size).enumerate() {
+            tree.delete(v);
+            assert_eq!(tree.len(), tree_size - i - 1);
+        }
+    }
+
+    #[test]
+    fn insert_delete_reverse_inorder() {
+        let mut tree = AVLTree::new();
+        let tree_size = 1000;
+        for v in (0..tree_size).rev() {
+            tree.insert(v);
+        }
+        for (i, v) in (0..tree_size).rev().enumerate() {
+            tree.delete(v);
+            assert_eq!(tree.len(), tree_size - i - 1);
+        }
+    }
+
+    #[test]
+    fn insert_delete_random() {
+        use rand::{rngs::StdRng, RngCore, SeedableRng};
+        use rand::seq::SliceRandom;
+
+        let seed = [0u8; 32];
+        let mut rng: StdRng = SeedableRng::from_seed(seed);
+        let mut tree = AVLTree::new();
+        let tree_size = 1000;
+        let mut x: Vec<_> = (0..tree_size).collect();
+        x.shuffle(&mut rng);
+        println!("{:?}", x);
+
+        for v in x.iter() {
+            tree.insert(*v);
+        }
+        for (i, v) in x.iter().enumerate() {
+            tree.delete(*v);
+            assert_eq!(tree.len(), tree_size - i - 1);
+        }
+    }
+
+    #[test]
+    fn test_debug_delete() {
+        let mut tree = AVLTree::new();
+
+        for x in vec![7, 2, 4, 0, 9, 3, 5, 8, 6, 1] {
+            tree.insert(x);
+        }
+
+        for (i, v) in (0..10).enumerate() {
+            tree.delete(v);
+            assert_eq!(tree.len(), 10 - i - 1);
+        }
+    }
 }
 
  
