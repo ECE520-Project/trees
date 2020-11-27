@@ -1,3 +1,13 @@
+//! Red-black tree
+//!
+//! You can generate a red-black tree, and insert or delete nodes.
+//!
+//! ```
+//! use trees::rbtree::RedBlackTree;
+//! // use this trait if you want to query information
+//! use trees::base::QueryableTree;
+//! ```
+
 use std::cell::RefCell;
 use std::fmt;
 use std::rc::Rc;
@@ -16,7 +26,6 @@ pub enum NodeColor {
     /// Black color, the root of [RedBlackTree](struct.RedBlackTree.html) will be set to Black
     Black,
 }
-
 
 /// Node struct for [RedBlackTree](struct.RedBlackTree.html) struct
 pub struct RedBlackTreeNode<T: Ord + Copy + fmt::Debug> {
@@ -49,7 +58,8 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             right: None,
         }))
     }
-     //------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------
      //Here are some functions which are unique to red black tree
     
      // Rotate the subtree rooted at this node to the right and
@@ -102,9 +112,8 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         right.clone().unwrap().borrow_mut().parent = parent;
         right
     }
-
-    //insers data into the subtree rooted at self,performs any rotations
-    //necessary to maintain banlance, and then returns the new root to this subtree.
+//insers data into the subtree rooted at self,performs any rotations
+//necessary to maintain banlance, and then returns the new root to this subtree.
     fn insert(node: RcRefRBTNode<T>, data: T) -> RBNodeLink<T> {
         let node_data = node.borrow().data;
         if node_data == data {
@@ -206,20 +215,20 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             match (left.clone(), right.clone()) {
             //It's easier to balance a node with at most one child,
             //So we replace this node with the greatest one less than it and 
-            //delete that.    
+            //delete that.  
                 (Some(left), Some(_right)) => {
                     let v = Self::get_max(left.clone());
                     node.borrow_mut().data = v;
                     Self::delete(left, v);
                 }
-            //This node has at most one non-None child,so we don't need to replace
+            //This node has at most one non-None child,so we don't need to replace    
                 _ => {
                     if node.borrow().color == NodeColor::Red {
                         let parent = node.borrow().parent.clone().unwrap();
                     //This node is red, and its child is black
                     //The only way this happens to a node with one child
                     //if both children are None leaves,
-                    //we can just delete this node and call it a day.    
+                    //we can just delete this node and call it a day.
                         if Self::is_left(node.clone()) {
                             parent.borrow_mut().left = None;
                         } else {
@@ -246,7 +255,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
                             }
                         }
                         // This node is black and its child is red
-                        // Move the child node here and make it black 
+                        // Move the child node here and make it black  
                         else {
                             let child = left.unwrap_or_else(|| right.unwrap());
                             let child_data = child.borrow().data;
@@ -287,209 +296,218 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
     }
 
-        //Repair the coloring of the tree that may have been messed up.
-        fn delete_repair(node: RcRefRBTNode<T>) {
-            let node_sibling = Self::sibling(node.clone());
-            if Self::color(node_sibling.clone()) == NodeColor::Red {
-                let node_sibling = node_sibling.clone().unwrap();
+    //Repair the coloring of the tree that may have been messed up.
+    fn delete_repair(node: RcRefRBTNode<T>) {
+        let node_sibling = Self::sibling(node.clone());
+        if Self::color(node_sibling.clone()) == NodeColor::Red {
+            let node_sibling = node_sibling.unwrap();
+            node_sibling.borrow_mut().color = NodeColor::Black;
+            let parent = node.borrow().parent.clone().unwrap();
+            parent.borrow_mut().color = NodeColor::Red;
+            if Self::is_left(node.clone()) {
+                Self::rotate_left(parent);
+            } else {
+                Self::rotate_right(parent);
+            }
+        }
+
+        let node_sibling = Self::sibling(node.clone());
+        let parent = node.borrow().parent.clone();
+        if Self::color(parent.clone()) == NodeColor::Black
+            && Self::color(node_sibling.clone()) == NodeColor::Black
+        {
+            let node_sibling = node_sibling.unwrap();
+            let left = node_sibling.borrow().left.clone();
+            let right = node_sibling.borrow().right.clone();
+            if Self::color(left) == NodeColor::Black && Self::color(right) == NodeColor::Black {
+                node_sibling.borrow_mut().color = NodeColor::Red;
+                Self::delete_repair(parent.unwrap());
+                return;
+            }
+        }
+
+        let node_sibling = Self::sibling(node.clone());
+        let parent = node.borrow().parent.clone();
+        if Self::color(parent.clone()) == NodeColor::Red
+            && Self::color(node_sibling.clone()) == NodeColor::Black
+        {
+            let node_sibling = node_sibling.unwrap();
+            let left = node_sibling.borrow().left.clone();
+            let right = node_sibling.borrow().right.clone();
+            if Self::color(left) == NodeColor::Black && Self::color(right) == NodeColor::Black {
+                node_sibling.borrow_mut().color = NodeColor::Red;
+                parent.unwrap().borrow_mut().color = NodeColor::Black;
+                return;
+            }
+        }
+
+        let node_sibling = Self::sibling(node.clone());
+        if Self::is_left(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
+            let node_sibling = node_sibling.unwrap();
+            let left = node_sibling.borrow().left.clone();
+            let right = node_sibling.borrow().right.clone();
+            if Self::color(right.clone()) == NodeColor::Black && Self::color(left) == NodeColor::Red
+            {
+                Self::rotate_right(node_sibling);
+                let node_sibling = Self::sibling(node.clone());
+                let node_sibling = node_sibling.unwrap();
                 node_sibling.borrow_mut().color = NodeColor::Black;
-                let parent = node.borrow().parent.clone().unwrap();
-                parent.borrow_mut().color = NodeColor::Red;
-                if Self::is_left(node.clone()) {
-                    Self::rotate_left(parent);
-                } else {
-                    Self::rotate_right(parent);
-                }
+                let right = node_sibling.borrow().right.clone();
+                let right = right.unwrap();
+                right.borrow_mut().color = NodeColor::Red;
             }
-    
-            let node_sibling = Self::sibling(node.clone());
-            let parent = node.borrow().parent.clone();
-            if Self::color(parent.clone()) == NodeColor::Black
-                && Self::color(node_sibling.clone()) == NodeColor::Black
+        }
+
+        let node_sibling = Self::sibling(node.clone());
+        if Self::is_right(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
+            let node_sibling = node_sibling.unwrap();
+            let left = node_sibling.borrow().left.clone();
+            let right = node_sibling.borrow().right.clone();
+            if Self::color(right.clone()) == NodeColor::Red
+                && Self::color(left.clone()) == NodeColor::Black
             {
-                let node_sibling = node_sibling.clone().unwrap();
+                Self::rotate_left(node_sibling);
+                let node_sibling = Self::sibling(node.clone());
+                let node_sibling = node_sibling.unwrap();
+                node_sibling.borrow_mut().color = NodeColor::Black;
                 let left = node_sibling.borrow().left.clone();
-                let right = node_sibling.borrow().right.clone();
-                if Self::color(left) == NodeColor::Black && Self::color(right) == NodeColor::Black {
-                    node_sibling.borrow_mut().color = NodeColor::Red;
-                    Self::delete_repair(parent.unwrap());
-                    return;
-                }
+                let left = left.unwrap();
+                left.borrow_mut().color = NodeColor::Red;
             }
-    
-            if Self::color(parent.clone()) == NodeColor::Red
-                && Self::color(node_sibling.clone()) == NodeColor::Black
-            {
-                let node_sibling = node_sibling.clone().unwrap();
-                let left = node_sibling.borrow().left.clone();
-                let right = node_sibling.borrow().right.clone();
-                if Self::color(left) == NodeColor::Black && Self::color(right) == NodeColor::Black {
-                    node_sibling.borrow_mut().color = NodeColor::Red;
-                    parent.clone().unwrap().borrow_mut().color = NodeColor::Black;
-                    return;
-                }
+        }
+
+        let node_sibling = Self::sibling(node.clone());
+        if Self::is_left(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
+            let node_sibling = node_sibling.unwrap();
+            let right = node_sibling.borrow().right.clone();
+            if Self::color(right.clone()) == NodeColor::Red {
+                let parent = node.borrow().parent.clone();
+                Self::rotate_left(parent.unwrap());
+                let grandparent = Self::grandparent(node.clone()).unwrap();
+                let parent = node.borrow().parent.clone();
+                let parent = parent.unwrap();
+                grandparent.borrow_mut().color = parent.borrow().color;
+                parent.borrow_mut().color = NodeColor::Black;
+                let sibling = Self::sibling(parent).unwrap();
+                sibling.borrow_mut().color = NodeColor::Black;
             }
-    
-            if Self::is_left(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
-                let node_sibling = node_sibling.clone().unwrap();
-                let left = node_sibling.borrow().left.clone();
-                let right = node_sibling.borrow().right.clone();
-                if Self::color(right.clone()) == NodeColor::Black && Self::color(left) == NodeColor::Red
+        }
+
+        let node_sibling = Self::sibling(node.clone());
+        if Self::is_right(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
+            let node_sibling = node_sibling.unwrap();
+            let left = node_sibling.borrow().left.clone();
+            if Self::color(left.clone()) == NodeColor::Red {
+                Self::rotate_right(parent.clone().unwrap());
+                let grandparent = Self::grandparent(node.clone()).unwrap();
+                let parent = node.borrow().parent.clone();
+                let parent = parent.unwrap();
+                grandparent.borrow_mut().color = parent.borrow().color;
+                parent.borrow_mut().color = NodeColor::Black;
+                let sibling = Self::sibling(parent).unwrap();
+                sibling.borrow_mut().color = NodeColor::Black;
+            }
+        }
+    }
+
+     //Check the coloring of the tree, and return true if the tree
+     //is colored in a way which matches these 5 Properties:
+     // 1. Each node is either red or black
+     // 2. The root node is black
+     // 3. All leaves are black
+     // 4. If a node is red, then both its children are black
+     // 5. Every path from any node to all of its descendent Nil nodes
+     // has the same number of black nodes.
+    fn check_color_properties(node: RcRefRBTNode<T>) -> bool {
+        // Propertity 1 is easy to get because nothing that can make the color
+        // be anything other than red or black
+            
+        // Property 2
+        if node.borrow().color == NodeColor::Red {
+            return false;
+        }
+        // Propertity 3 does not need to be checked, because None is assumed to be black.
+      
+        // Propertity 4
+        if !Self::check_coloring(node.clone()) {
+            return false;
+        }
+        //Propertity 5 
+        if Self::black_height(Some(node)).is_none() {
+            return false;
+        }
+        //If all properties are met
+        true
+    }
+
+         // A helper function to recursively check Property 4 of a Red-Black tree.
+         fn check_coloring(node: RcRefRBTNode<T>) -> bool {
+            if node.borrow().color == NodeColor::Red {
+                if Self::color(node.borrow().left.clone()) == NodeColor::Red
+                    || Self::color(node.borrow().right.clone()) == NodeColor::Red
                 {
-                    Self::rotate_right(node_sibling.clone());
-                    let node_sibling = Self::sibling(node.clone());
-                    let node_sibling = node_sibling.unwrap();
-                    node_sibling.borrow_mut().color = NodeColor::Black;
-                    let right = node_sibling.borrow().right.clone();
-                    let right = right.unwrap();
-                    right.borrow_mut().color = NodeColor::Red;
+                    return false;
                 }
             }
     
-            if Self::is_right(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
-                let node_sibling = node_sibling.clone().unwrap();
-                let left = node_sibling.borrow().left.clone();
-                let right = node_sibling.borrow().right.clone();
-                if Self::color(right.clone()) == NodeColor::Red
-                    && Self::color(left.clone()) == NodeColor::Black
-                {
-                    Self::rotate_left(node_sibling.clone());
-                    let node_sibling = Self::sibling(node.clone());
-                    let node_sibling = node_sibling.unwrap();
-                    node_sibling.borrow_mut().color = NodeColor::Black;
-                    let left = node_sibling.borrow().left.clone();
-                    let left = left.unwrap();
-                    left.borrow_mut().color = NodeColor::Red;
+            let left = node.borrow().left.clone();
+            match left {
+                Some(left) => {
+                    if !Self::check_coloring(left) {
+                        return false;
+                    }
                 }
+                None => (),
             }
     
-            if Self::is_left(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
-                let node_sibling = node_sibling.clone().unwrap();
-                let right = node_sibling.borrow().right.clone();
-                if Self::color(right.clone()) == NodeColor::Red {
-                    Self::rotate_left(parent.clone().unwrap());
-                    let grandparent = Self::grandparent(node.clone()).unwrap();
-                    let parent = parent.clone().unwrap();
-                    grandparent.borrow_mut().color = parent.borrow().color;
-                    parent.borrow_mut().color = NodeColor::Black;
-                    let sibling = Self::sibling(parent).unwrap();
-                    sibling.borrow_mut().color = NodeColor::Black;
+            let right = node.borrow().right.clone();
+            match right {
+                Some(right) => {
+                    if !Self::check_coloring(right) {
+                        return false;
+                    }
                 }
+                None => (),
             }
     
-            if Self::is_right(node.clone()) && Self::color(node_sibling.clone()) == NodeColor::Black {
-                let node_sibling = node_sibling.clone().unwrap();
-                let left = node_sibling.borrow().left.clone();
-                if Self::color(left.clone()) == NodeColor::Red {
-                    Self::rotate_right(parent.clone().unwrap());
-                    let grandparent = Self::grandparent(node.clone()).unwrap();
-                    let parent = parent.clone().unwrap();
-                    grandparent.borrow_mut().color = parent.borrow().color;
-                    parent.borrow_mut().color = NodeColor::Black;
-                    let sibling = Self::sibling(parent).unwrap();
-                    sibling.borrow_mut().color = NodeColor::Black;
+            true
+        }
+
+    //Return the number of black nodes from this node to the leaves
+    //of the tree. or None if there is not one such value.
+    fn black_height(node: RBNodeLink<T>) -> Option<usize> {
+        match node {
+            // If we are already at a leaf,there is no path
+            None => Some(1),
+            Some(node) => {
+                let lh = Self::black_height(node.borrow().left.clone());
+                let rh = Self::black_height(node.borrow().right.clone());
+                match (lh, rh) {
+                    (Some(lh), Some(rh)) => {
+                        if lh != rh {
+                        //The 2 children have unequal depths
+                            None
+                        } else {
+                            let node_color = node.borrow().color;
+                        //Return the black depth of children,plus 1 if the node is black
+                            match node_color {
+                                NodeColor::Red => Some(lh),
+                                NodeColor::Black => Some(lh + 1),
+                            }
+                        }
+                    }
+                    //There are issues with coloring below children nodes
+                    _ => None,
                 }
             }
         }
-    
-    //      //Check the coloring of the tree, and return true if the tree
-    //      //is colored in a way which matches these 5 Properties:
-    //      // 1. Each node is either red or black
-    //      // 2. The root node is black
-    //      // 3. All leaves are black
-    //      // 4. If a node is red, then both its children are black
-    //      // 5. Every path from any node to all of its descendent Nil nodes
-    //      // has the same number of black nodes.
-    //      fn check_color_properties(node: RcRefRBTNode<T>) -> bool {
-    //         // Propertity 1 is easy to get because nothing that can make the color
-    //         // be anything other than red or black
-            
-    //         // Property 2
-    //           if node.borrow().color == NodeColor::Red {
-    //               return false;
-    //           }
-    //         // Propertity 3 does not need to be checked, because None is assumed to be black.
-      
-    //         // Propertity 4
-    //           if !Self::check_coloring(node.clone()) {
-    //               return false;
-    //           }
-      
-    //         //Propertity 5
-    //           if Self::black_height(Some(node)).is_none() {
-    //               return false;
-    //           }
-    //         //If all properties are met
-    //           true
-    //       }
-
-    //        // A helper function to recursively check Property 4 of a Red-Black tree.
-    // fn check_coloring(node: RcRefRBTNode<T>) -> bool {
-    //     if node.borrow().color == NodeColor::Red {
-    //         if Self::color(node.borrow().left.clone()) == NodeColor::Red
-    //             || Self::color(node.borrow().right.clone()) == NodeColor::Red
-    //         {
-    //             return false;
-    //         }
-    //     }
-
-    //     let left = node.borrow().left.clone();
-    //     match left {
-    //         Some(left) => {
-    //             if !Self::check_coloring(left) {
-    //                 return false;
-    //             }
-    //         }
-    //         None => (),
-    //     }
-
-    //     let right = node.borrow().right.clone();
-    //     match right {
-    //         Some(right) => {
-    //             if !Self::check_coloring(right) {
-    //                 return false;
-    //             }
-    //         }
-    //         None => (),
-    //     }
-
-    //     true
-    // }
-
-    //Return the number of black nodes from this node to the leaves
-    // of the tree. or None if there is not one such value.
-    // fn black_height(node: RBNodeLink<T>) -> Option<usize> {
-    //     if node.is_none() {
-    //         // If we are already at a leaf,there is no path
-    //         return Some(1);
-    //     }
-
-    //     let node = node.unwrap();
-    //     let left = Self::black_height(node.borrow().left.clone());
-    //     let right = Self::black_height(node.borrow().right.clone());
-    //     // println!("left = {:?}, right = {:?}", left, right);
-    //     if left.is_none() || right.is_none() {
-    //         //There are issues with coloring below children nodes
-    //         return None;
-    //     }
-    //     if left.unwrap() != right.unwrap() {
-    //         //The 2 children have unequal depths
-    //         return None;
-    //     }
-    //     let node_color = node.borrow().color;
-    //     //Return the black depth of children,plus 1 if the node is black
-    //     match node_color {
-    //         NodeColor::Red => left,
-    //         NodeColor::Black => Some(left.unwrap() + 1),
-    //     }
-    // }
-
+    }
 
     //------------------------------------------------------------ 
     //Here are some functions which are general to all binary search trees
-
+    
     fn search(node: RcRefRBTNode<T>, v: T) -> RBNodeLink<T> {
-        //Search through the trees for data, returning its node if it is 
+         //Search through the trees for data, returning its node if it is 
         //found and None otherwise.
         let node_data = node.borrow().data;
         if node_data == v {
@@ -511,14 +529,12 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
 
     fn get_max(node: RcRefRBTNode<T>) -> T {
         //Return the largest element in the tree
-        match node.borrow().right.clone() {
-            //go as far right as possible
-            Some(right) => Self::get_max(right),
-            None => node.borrow().data,
-        }
-    }
-
-    
+       match node.borrow().right.clone() {
+           //go as far right as possible
+           Some(right) => Self::get_max(right),
+           None => node.borrow().data,
+       }
+   }
 
     fn grandparent(node: RcRefRBTNode<T>) -> RBNodeLink<T> {
         //Get the current node's grandparent, or None if it does not exist.
@@ -571,7 +587,6 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             Some(v) => v.borrow().color,
         }
     }
-    
 
     fn is_equal(left: RBNodeLink<T>, right: RBNodeLink<T>) -> bool {
         match (left, right) {
@@ -593,6 +608,8 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             }
         }
     }
+
+    
 
     fn preorder_traverse(node: RcRefRBTNode<T>, container: &mut Vec<T>) {
         container.push(node.borrow().data);
@@ -733,7 +750,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTree<T> {
             None => false,
         }
     }
-    //this function is for the test below
+
     fn is_equal(&self, other: &RedBlackTree<T>) -> bool {
         RedBlackTreeNode::is_equal(self.root.clone(), other.root.clone())
     }
@@ -785,11 +802,10 @@ mod test {
                 Some(right.clone()),
             ));
         }
-
         // Make the left rotation
-        let left_rotation = RedBlackTree::new(10);
+        let left_rot = RedBlackTree::new(10);
         {
-            let root = left_rotation.root.clone().unwrap();
+            let root = left_rot.root.clone().unwrap();
             root.borrow_mut().left = Some(RedBlackTreeNode::new(
                 0,
                 NodeColor::Black,
@@ -830,7 +846,7 @@ mod test {
             let root = tree.root.clone().unwrap();
             tree.root = RedBlackTreeNode::rotate_left(root);
         }
-        assert!(tree.is_equal(&left_rotation))
+        assert!(tree.is_equal(&left_rot))
     }
 
     #[test]
@@ -911,13 +927,13 @@ mod test {
         });
         vec![15, -12, 9].iter().for_each(|v| {
             tree.delete(*v);
-        //Did not find something in the tree
+         //Did not find something in the tree
             assert!(!tree.search(*v));
         });
 
         let root = tree.root.clone().unwrap();
-        // to do: need to be fixed as a condition.
-        // assert!(RedBlackTreeNode::check_color_properties(root.clone()));
+        //fixed it
+        assert!(RedBlackTreeNode::check_color_properties(root.clone()));
         let mut container = vec![];
         RedBlackTreeNode::inorder_traverse(root, &mut container);
         assert_eq!(container, vec![-8, 0, 4, 8, 10, 11, 12]);
@@ -956,3 +972,4 @@ mod test {
         assert_eq!(v_max, 24)
     }
 }
+
