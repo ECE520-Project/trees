@@ -202,6 +202,8 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use rand::{rngs::StdRng, RngCore, SeedableRng};
+    use rand::seq::SliceRandom;
 
     #[test]
     fn test_demo() {
@@ -458,9 +460,6 @@ mod test {
 
     #[test]
     fn insert_delete_random() {
-        use rand::{rngs::StdRng, RngCore, SeedableRng};
-        use rand::seq::SliceRandom;
-
         let seed = [0u8; 32];
         let mut rng: StdRng = SeedableRng::from_seed(seed);
         let mut tree = BinarySearchTree::new();
