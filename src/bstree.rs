@@ -113,7 +113,7 @@ impl <T: Ord + Copy + fmt::Debug> BinarySearchTreeNode<T> {
         match self.data.cmp(&val) {
             Ordering::Greater => self._delete_left(val),
             Ordering::Less => self._delete_right(val),
-            _ => panic!("impossible!"),
+            _ => unreachable!(),
         }
     }
 }
@@ -202,6 +202,8 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use rand::{rngs::StdRng, RngCore, SeedableRng};
+    use rand::seq::SliceRandom;
 
     #[test]
     fn test_demo() {
@@ -428,5 +430,49 @@ mod test {
         bst.delete(5);
         assert_eq!(bst.len(), 6);
         bst.print_inorder();
+    }
+
+    #[test]
+    fn insert_delete_inorder() {
+        let mut tree = BinarySearchTree::new();
+        let tree_size = 1000;
+        for v in 0..tree_size {
+            tree.insert(v);
+        }
+        for (i, v) in (0..tree_size).enumerate() {
+            tree.delete(v);
+            assert_eq!(tree.len(), tree_size - i - 1);
+        }
+    }
+
+    #[test]
+    fn insert_delete_reverse_inorder() {
+        let mut tree = BinarySearchTree::new();
+        let tree_size = 1000;
+        for v in (0..tree_size).rev() {
+            tree.insert(v);
+        }
+        for (i, v) in (0..tree_size).rev().enumerate() {
+            tree.delete(v);
+            assert_eq!(tree.len(), tree_size - i - 1);
+        }
+    }
+
+    #[test]
+    fn insert_delete_random() {
+        let seed = [0u8; 32];
+        let mut rng: StdRng = SeedableRng::from_seed(seed);
+        let mut tree = BinarySearchTree::new();
+        let tree_size = 1000;
+        let mut x: Vec<_> = (0..tree_size).collect();
+        x.shuffle(&mut rng);
+
+        for v in x.iter() {
+            tree.insert(*v);
+        }
+        for (i, v) in x.iter().enumerate() {
+            tree.delete(*v);
+            assert_eq!(tree.len(), tree_size - i - 1);
+        }
     }
 }
