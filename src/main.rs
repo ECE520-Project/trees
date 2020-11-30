@@ -1,60 +1,42 @@
-use trees::bstree::BinarySearchTree;
-use trees::rbtree::RedBlackTree;
-use trees::avltree::AVLTree;
-use trees::base::QueryableTree;
+#[path = "../examples/avl_tree.rs"]
+mod avl_tree;
+#[path = "../examples/binary_search_tree.rs"]
+mod binary_search_tree;
+#[path = "../examples/red_black_tree.rs"]
+mod red_black_tree;
+mod cli;
+use std::env;
 
-fn main() {
-    println!("============== Binary Search Tree ==============");
-    let mut bst = BinarySearchTree::new();
-    bst.insert(1);
-    bst.insert(0);
-    bst.insert(2);
-    bst.insert(3);
-    bst.insert(5);
-    bst.insert(10);
-    bst.insert(7);
-    bst.insert(9);
-    bst.insert(4);
-    println!("height: {}", bst.height());
-    println!("is_empty: {}", bst.is_empty());
-    println!("count_leaves: {}", bst.count_leaves());
-    println!("min: {}", bst.min().unwrap());
-    println!("max: {}", bst.max().unwrap());
-    println!("contains 1: {}", bst.contains(1));
-    println!("contains 10: {}", bst.contains(10));
-    print!("print_inorder: ");
-    bst.print_inorder();
 
-    println!("============== AVL Tree ==============");
-    let mut avl = AVLTree::new();
-    avl.insert(1);
-    avl.insert(0);
-    avl.insert(2);
-    avl.insert(3);
-    avl.insert(5);
-    avl.insert(10);
-    avl.insert(7);
-    avl.insert(9);
-    avl.insert(4);
-    println!("height: {}", avl.height());
-    println!("is_empty: {}", avl.is_empty());
-    println!("count_leaves: {}", avl.count_leaves());
-    println!("min: {}", avl.min().unwrap());
-    println!("max: {}", avl.max().unwrap());
-    println!("contains 2: {}", avl.contains(2));
-    println!("contains 10: {}", avl.contains(10));
-    print!("print_inorder: ");
-    avl.print_inorder();
+pub fn main(){
 
-    println!("============== Red-black Tree ==============");
-    let rbt = RedBlackTree::new(2);
-    println!("height: {}", rbt.height());
-    println!("is_empty: {}", rbt.is_empty());
-    println!("count_leaves: {}", rbt.count_leaves());
-    println!("min: {}", rbt.min().unwrap());
-    println!("max: {}", rbt.max().unwrap());
-    println!("contains 2: {}", rbt.contains(2));
-    println!("contains 10: {}", rbt.contains(0));
-    print!("print_inorder: ");
-    rbt.print_inorder();
+    let args: Vec<String> = env::args().collect();
+
+    let mut answer = String::new();
+    
+    match args.len(){
+        1 => {
+            //no arguments passed: cargo run
+            println!("Welcome!");
+            println!("View examples of the program or use the CLI ?");
+            println!("Enter 'Yes' to view examples or 'No' to use the CLI");
+
+            print!("Your choice > ");
+            cli::get_user_input(&mut answer);
+        
+            if answer.to_lowercase().contains("n") {
+                cli::hello();
+            }
+            else if answer.as_str().to_lowercase().contains("y") {
+                avl_tree::main();
+                red_black_tree::main();
+                binary_search_tree::main();
+            }
+        },
+        2 => eprint!("not enough arguments !"),
+
+        3| 4 => cli::run_cli(),
+            
+        _ => eprint!("Invalid input , restart"),
+    } 
 }
