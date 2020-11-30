@@ -95,6 +95,31 @@ pub fn run_cli(){
 
                 _ => println!("Command not recognized. Type help for available commands."),
             }
+        }
+        else if t.to_lowercase().contains("bst"){
+
+            println!("testing bst branch");
+
+            let mut bst = BinarySearchTree::new();
+
+            match operation.unwrap().to_lowercase().as_str() {
+                "insert"  => bst.insert(value),
+                "delete" => bst.delete(value),
+                "height" => println!("{:?}",bst.height()),
+                "count" => println!("{:?}",bst.count_leaves()),
+                "length" => println!("{:?}",bst.len()),
+                "contains" => println!("{:?}",bst.contains(value)),
+                "min" => println!("{:?}",bst.min()),
+                "max" => println!("{:?}",bst.max()),
+                "empty" => println!("{:?}",bst.is_empty()),
+                "print" => bst.print_inorder(),
+
+                "help" => println!("Availabe commands: \n------------------ \n- insert \n- delete \n- height \n- count \n- length \n- min \n- max \n- empty \n- contains \n- print"),
+                
+                "exit" => return,
+
+                _ => println!("Command not recognized. Type help for available commands."),
+            }
 
 
         }
@@ -114,13 +139,26 @@ pub fn get_user_input(input: &mut String) {
     stdout().flush().expect("failed to flush");
     stdin().read_line(input).expect("failed to read from stdin");
 }
-// enum TreeType{
-//     AVLTree,
-//     RedBlackTree,
-// }
 
-// pub fn tree_operation(operation: String, t: TreeType)  {
-
+// pub fn chosen_tree<T>(operation: Option<String>, tree:T, value:T)
+//     where
+//     T: QueryableTree<T: Ord + Copy + fmt::Debug>
+// {
+//     match operation.unwrap().to_lowercase().as_str() {
+//         "insert"  => tree.insert(value),
+//         "delete" => tree.delete(value),
+//         "height" => println!("{:?}",tree.height()),
+//         "count" => println!("{:?}",tree.count_leaves()),
+//         "length" => println!("{:?}",tree.len()),
+//         "contains" => println!("{:?}",tree.contains(value)),
+//         "min" => println!("{:?}",tree.min()),
+//         "max" => println!("{:?}",tree.max()),
+//         "empty" => println!("{:?}",tree.is_empty()),
+//         "print" => tree.print_inorder(),
+//         "help" => println!("Availabe commands: \n------------------ \n- insert \n- delete \n- height \n- count \n- length \n- min \n- max \n- empty \n- contains \n- print"),
+//         "exit" => return,
+//         _ => println!("Command not recognized. Type help for available commands."),
+//     }
 // }
 pub fn hello(){
     println!("----------------------------------------Trees CLI--------------------------------------------------");
@@ -128,6 +166,7 @@ pub fn hello(){
     println!("---------------------------------------------------------------------------------------------------\n");
     println!("Available trees: \n---------------- \n- AVL tree (avl) \n- Red-Black Tree (rbt)\n");
     println!("Availabe commands: \n------------------ \n- insert \n- delete \n- height \n- count \n- length \n- min \n- max \n- empty \n- contains \n- print\n");
-    println!("How to use the CLI: \n");
+    println!("How to use the CLI: ");
+    println!("-------------------");
     println!("use: cargo run [tree_name] [operation] [optional value] \nExample1: cargo run avl insert 5 \nExample2: cargo run avl print ")
 }
