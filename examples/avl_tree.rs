@@ -1,6 +1,7 @@
-use trees::prelude::*;
 
-fn main() {
+pub use trees::prelude::{AVLTree, QueryableTree};
+
+pub fn main() {
     println!("============== AVL Tree ==============");
     let mut avl = AVLTree::new();
     avl.insert(1);
