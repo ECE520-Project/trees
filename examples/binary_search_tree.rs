@@ -1,6 +1,7 @@
-use trees::prelude::*;
 
-fn main() {
+pub use trees::prelude::{BinarySearchTree, QueryableTree};
+
+pub fn main() {
     println!("============== Binary Search Tree ==============");
     let mut bst = BinarySearchTree::new();
     bst.insert(1);
