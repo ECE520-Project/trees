@@ -1,6 +1,7 @@
-use trees::prelude::*;
 
-fn main() {
+pub use trees::prelude::{QueryableTree, RedBlackTree};
+
+pub fn main() {
     println!("============== Red-black Tree ==============");
     let mut rbt = RedBlackTree::new(2);
     println!("height: {}", rbt.height());
