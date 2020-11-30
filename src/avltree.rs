@@ -55,15 +55,15 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
     }
     /// Insert a new node
     fn insert(&mut self, node: AVLTreeNode<T>) {
-        match (node).data.cmp(&self.data) {
+        match node.data.cmp(&self.data) {
             Ordering::Less => {
-                match self.left {
+                match self.left.clone() {
                     None => self.left = Some(Rc::new(RefCell::new(node))),
                     Some(ref mut l) => l.borrow_mut().insert(node),
                 }
             },
             Ordering::Greater => {
-                match self.right {
+                match self.right.clone() {
                     None => self.right = Some(Rc::new(RefCell::new(node))),
                     Some(ref mut r) => r.borrow_mut().insert(node),
                 }
@@ -83,7 +83,8 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
             },
             Ordering::Greater => {
                 if let Some(succ) = root.borrow().left.clone().take() {
-                    root.borrow_mut().left =  Self::delete(data, succ);
+                    let mut x = root.borrow().left.clone();
+                    x =  Self::delete(data, succ);
                     return Some(Self::updated_node(root.clone()))
                 }
             }
@@ -91,14 +92,14 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         return Some(root.clone());
     }
 
-    fn height(node: &AVLNodeLink<T>) -> u32  {
+    fn height(node: AVLNodeLink<T>) -> u32  {
         return node.as_ref().map_or(0, |succ| succ.borrow().height.clone())
     }
-    fn update_height(node:&mut AVLTreeNode<T>){
-        node.height = cmp::max( Self::height(&node.left.clone()), Self::height(&node.right.clone()) )+1;
+    fn update_height(node: &mut AVLTreeNode<T>){
+        node.height = cmp::max( Self::height(node.left.clone()), Self::height(node.right.clone()) )+1;
     }
-    fn rotate_right(root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T>{
-        let new_root = root.borrow().left.clone().take().expect("broken tree");
+    fn rotate_right(mut root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T>{
+        let new_root = root.borrow_mut().left.take().expect("broken tree");
         root.borrow_mut().left = new_root.borrow().right.clone().take();
         Self::update_height(&mut root.borrow_mut());
         new_root.borrow_mut().right = Some(root);
@@ -106,7 +107,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         return new_root
     }
     fn rotate_left(root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T>{
-        let new_root = root.borrow().right.clone().take().expect("not accepted");
+        let new_root = root.borrow_mut().right.take().expect("not accepted");
         root.borrow_mut().right = new_root.borrow().left.clone().take();
         Self::update_height(&mut root.borrow_mut());
         new_root.borrow_mut().left = Some(root);
@@ -115,10 +116,10 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
     }
     fn rotate_right_node(root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T> {
         let right = root.as_ref().borrow_mut().right.take().expect("not accepted");
-        if Self::height(&right.borrow_mut().left) > Self::height(&right.borrow_mut().right) {
+        if Self::height(right.borrow().left.clone()) > Self::height(right.borrow().right.clone()) {
             let rotated_node = Self::rotate_right(right);
-            root.as_ref().borrow_mut().right = Some(rotated_node);
-            Self::update_height(&mut root.as_ref().borrow_mut());
+            root.borrow_mut().right = Some(rotated_node);
+            Self::update_height(&mut root.borrow_mut());
         }
         else {
             root.as_ref().borrow_mut().right = Some(right)
@@ -127,19 +128,19 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
     }
     fn rotate_left_node(root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T> {
         let left = root.as_ref().borrow_mut().left.take().expect("not accepted");
-        if Self::height(&left.borrow_mut().left) < Self::height(&left.borrow_mut().right) {
+        if Self::height(left.borrow().left.clone()) < Self::height(left.borrow().right.clone()) {
             let rotated_node = Self::rotate_left(left);
-            root.as_ref().borrow_mut().left = Some(rotated_node);
-            Self::update_height(&mut root.as_ref().borrow_mut());
+            root.borrow_mut().left = Some(rotated_node);
+            Self::update_height(&mut root.borrow_mut());
         }
         else{
-            root.as_ref().borrow_mut().left = Some(left);
+            root.borrow_mut().left = Some(left);
         }
         Self::rotate_right(root)
     }
     fn diff_height(root: &RcRefAVLTNode<T>) -> i32 {
-        let left_height = Self::height(&root.as_ref().borrow_mut().left);
-        let right_height = Self::height(&root.as_ref().borrow_mut().right);
+        let left_height = Self::height(root.borrow().left.clone());
+        let right_height = Self::height(root.borrow().right.clone());
         (left_height as i32) - (right_height as i32)
     }
     fn rebalance(root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T> {
@@ -151,13 +152,14 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
             _ => unreachable!()
         }
     }
-    fn updated_node(root: RcRefAVLTNode<T>) ->RcRefAVLTNode<T> {
+    fn updated_node(mut root: RcRefAVLTNode<T>) ->RcRefAVLTNode<T> {
         Self::update_height(&mut root.borrow_mut());
-        Self::rebalance(root)
+        Self::rebalance(root.clone())
     }
     fn delete_left_node(root: RcRefAVLTNode<T>, left: RcRefAVLTNode<T>) -> (AVLNodeLink<T>,RcRefAVLTNode<T>){
         let (new_left, min) =  Self::delete_min(left);
-        root.borrow_mut().left = new_left;
+        let mut x = root.borrow().left.clone();
+        x = new_left;
         (Some(Self::updated_node(root)),min)
     }
     fn delete_min(root: RcRefAVLTNode<T>) -> (AVLNodeLink<T>, RcRefAVLTNode<T>) {
@@ -227,8 +229,8 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
     /// avl.delete(1);
     /// ```
     pub fn delete(&mut self, val:T){
-        match self.root.take() {
-            Some(node) => self.root = AVLTreeNode::delete(val, node),
+        match self.root.clone().take() {
+            Some(node) => self.root = AVLTreeNode::delete(val, node.clone()),
             None => return
         }
     }
@@ -237,7 +239,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use rand::{rngs::StdRng, RngCore, SeedableRng};
+    use rand::{rngs::StdRng, SeedableRng};
     use rand::seq::SliceRandom;
 
     #[test]
@@ -265,20 +267,23 @@ mod test {
     #[test]
     fn test_avl_delete() {
         let mut avl = AVLTree::<i32>::new();
+
+        assert_eq!(avl.height(),0);
+
         avl.insert(2);
         avl.insert(4);
         avl.insert(6);
+        assert_eq!(avl.height(),3);
 
         avl.delete(2);
         assert_eq!(avl.height(),2);
-    }
-    fn test_avl_delete_with_rotation() {
-        let mut avl = AVLTree::<i32>::new();
-    
+
+        avl.delete(4);
+        assert_eq!(avl.height(),1);
     }
 
     #[test]
-    fn insert_delete_inorder() {
+    fn insert_delete_inorder_avl() {
         let mut tree = AVLTree::new();
         let tree_size = 1000;
         for v in 0..tree_size {
@@ -291,7 +296,7 @@ mod test {
     }
 
     #[test]
-    fn insert_delete_reverse_inorder() {
+    fn insert_delete_reverse_inorder_avl() {
         let mut tree = AVLTree::new();
         let tree_size = 1000;
         for v in (0..tree_size).rev() {
@@ -304,7 +309,7 @@ mod test {
     }
 
     #[test]
-    fn insert_delete_random() {
+    fn insert_delete_random_avl() {
         let seed = [0u8; 32];
         let mut rng: StdRng = SeedableRng::from_seed(seed);
         let mut tree = AVLTree::new();
@@ -323,7 +328,7 @@ mod test {
     }
 
     #[test]
-    fn test_debug_delete() {
+    fn test_debug_delete_avl() {
         let mut tree = AVLTree::new();
 
         for x in vec![7, 2, 4, 0, 9, 3, 5, 8, 6, 1] {
