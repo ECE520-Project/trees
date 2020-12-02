@@ -132,6 +132,7 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
     ///
     /// # Example
     ///
+    /// ```
     /// use trees::bstree::BinarySearchTree;
     ///
     /// let mut bst: BinarySearchTree<i32> = BinarySearchTree::new();
