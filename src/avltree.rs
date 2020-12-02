@@ -195,6 +195,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
     ///
     /// # Example
     ///
+    /// ```
     /// use trees::avltree::AVLTree;
     ///
     /// let mut avl: AVLTree<i64> = AVLTree::new();

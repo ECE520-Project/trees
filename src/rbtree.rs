@@ -59,11 +59,11 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }))
     }
 
-    ///------------------------------------------------------------------------
-    ///Here are some functions which are unique to red black tree
+    // ------------------------------------------------------------------------
+    // Here are some functions which are unique to red black tree
     
     /// Rotate the subtree rooted at this node to the right and
-    ///  returns the new root to this subtree.
+    /// returns the new root to this subtree.
     fn rotate_right(node: RcRefRBTNode<T>) -> RBNodeLink<T> {
         let parent = node.borrow().parent.clone();
         let left = node.borrow().left.clone();
@@ -87,8 +87,9 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         left.clone().unwrap().borrow_mut().parent = parent;
         left
     }
+
     /// Rotate the subtree rooted at this node to the left and
-    /// returns the new root to this subtree.
+    /// return the new root to this subtree.
     fn rotate_left(node: RcRefRBTNode<T>) -> RBNodeLink<T> {
         let parent = node.borrow().parent.clone();
         let right = node.borrow().right.clone();
@@ -112,8 +113,9 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         right.clone().unwrap().borrow_mut().parent = parent;
         right
     }
-///insers data into the subtree rooted at self,performs any rotations
-///necessary to maintain banlance, and then returns the new root to this subtree.
+
+    /// Insert data into the subtree rooted at self,performs any rotations
+    /// necessary to maintain banlance, and then returns the new root to this subtree.
     fn insert(node: RcRefRBTNode<T>, data: T) -> RBNodeLink<T> {
         let node_data = node.borrow().data;
         if node_data == data {
@@ -154,7 +156,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
     }
 
-    ///Repair the coloring from inserting into a tree.
+    /// Repair the coloring from inserting into a tree.
     fn insert_repair(node: RcRefRBTNode<T>) {
         let parent = node.borrow().parent.clone();
         match parent {
@@ -206,7 +208,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
     }
 
-    ///Delete data from this tree
+    /// Delete data from this tree
     fn delete(node: RcRefRBTNode<T>, val: T) -> RBNodeLink<T> {
         let node_data = node.borrow().data;
         if node_data == val {
@@ -296,7 +298,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
     }
 
-    ///Repair the coloring of the tree that may have been messed up.
+    /// Repair the coloring of the tree that may have been messed up.
     fn delete_repair(node: RcRefRBTNode<T>) {
         let node_sibling = Self::sibling(node.clone());
         if Self::color(node_sibling.clone()) == NodeColor::Red {
@@ -415,13 +417,13 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
     }
 
-     ///Check the coloring of the tree, and return true if the tree
-     ///is colored in a way which matches these 5 Properties:
-     /// 1. Each node is either red or black
-     /// 2. The root node is black
-     /// 3. All leaves are black
-     /// 4. If a node is red, then both its children are black
-     /// 5. Every path from any node to all of its descendent Nil nodes
+     /// Check the coloring of the tree, and return true if the tree
+     /// is colored in a way which matches these 5 Properties:
+     ///   1. Each node is either red or black
+     ///   2. The root node is black
+     ///   3. All leaves are black
+     ///   4. If a node is red, then both its children are black
+     ///   5. Every path from any node to all of its descendent Nil nodes
      /// has the same number of black nodes.
     fn check_color_properties(node: RcRefRBTNode<T>) -> bool {
         // Propertity 1 is easy to get because nothing that can make the color
@@ -478,8 +480,8 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             true
         }
 
-    ///Return the number of black nodes from this node to the leaves
-    ///of the tree. or None if there is not one such value.
+    /// Return the number of black nodes from this node to the leaves
+    /// of the tree. or None if there is not one such value.
     fn black_height(node: RBNodeLink<T>) -> Option<usize> {
         match node {
             // If we are already at a leaf,there is no path
@@ -508,8 +510,8 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
     }
 
-    ///------------------------------------------------------------ 
-    ///Here are some functions which are general to all binary search trees
+    // ------------------------------------------------------------
+    // Here are some functions which are general to all binary search trees
     
     fn search(node: RcRefRBTNode<T>, v: T) -> RBNodeLink<T> {
          //Search through the trees for data, returning its node if it is 
@@ -533,16 +535,16 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
     }
 
     fn get_max(node: RcRefRBTNode<T>) -> T {
-        //Return the largest element in the tree
+        // Return the largest element in the tree
        match node.borrow().right.clone() {
-           //go as far right as possible
+           // go as far right as possible
            Some(right) => Self::get_max(right),
            None => node.borrow().data,
        }
    }
 
     fn grandparent(node: RcRefRBTNode<T>) -> RBNodeLink<T> {
-        //Get the current node's grandparent, or None if it does not exist.
+        // Get the current node's grandparent, or None if it does not exist.
         match node.borrow().parent.clone() {
             Some(parent) => parent.borrow().parent.clone(),
             _ => None,
@@ -550,7 +552,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
     }
 
     fn sibling(node: RcRefRBTNode<T>) -> RBNodeLink<T> {
-        //Get the current node's sibling, or None if it does not exist.
+        // Get the current node's sibling, or None if it does not exist.
         match node.borrow().parent.clone() {
             None => None,
             Some(parent) => {
@@ -586,7 +588,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
     }
 
     fn color(node: RBNodeLink<T>) -> NodeColor {
-        //Return the color of a node,allowing for none leaves.
+        // Return the color of a node,allowing for none leaves.
         match node {
             None => NodeColor::Black,
             Some(v) => v.borrow().color,
@@ -759,13 +761,6 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTree<T> {
         }
     }
 
-    pub fn search(&self, val: T) -> bool {
-        match self.root.clone() {
-            Some(root) => RedBlackTreeNode::search(root, val).is_some(),
-            None => false,
-        }
-    }
-
     fn is_equal(&self, other: &RedBlackTree<T>) -> bool {
         RedBlackTreeNode::is_equal(self.root.clone(), other.root.clone())
     }
@@ -870,8 +865,8 @@ mod test {
 
     #[test]
     fn insert() {
-        //Test the insert() method of the tree correctly 
-        //balances, colors and inserts.
+        // Test the insert() method of the tree correctly
+        // balances, colors and inserts.
         let mut tree = RedBlackTree::new();
         tree.insert(0);
         vec![8, -8, 4, 12, 10, 11].iter().for_each(|v| {
@@ -923,26 +918,26 @@ mod test {
 
     #[test]
     fn insert_and_search() {
-        //Test searching through the tree for values.
+        // Test searching through the tree for values.
         let mut tree = RedBlackTree::new();
         tree.insert(0);
         vec![8, -8, 4, 12, 10, 11].iter().for_each(|v| {
             tree.insert(*v);
         });
-        //Did not find something in the tree
+        // Did not find something in the tree
         vec![5, -6, -10, 13].iter().for_each(|v| {
-            assert!(!tree.search(*v));
+            assert!(!tree.contains(*v));
         });
-        //Found something in the tree
+        // Found something in the tree
         vec![11, 12, -8, 0].iter().for_each(|v| {
-            assert!(tree.search(*v));
+            assert!(tree.contains(*v));
         })
     }
 
     #[test]
     fn insert_delete() {
-        //Test the insert() and delete() method of the tree, verifying the
-        //insertion，deletion of elements, and the balancing of the tree.
+        // Test the insert() and delete() method of the tree, verifying the
+        // insertion，deletion of elements, and the balancing of the tree.
         let mut tree = RedBlackTree::new();
         tree.insert(0);
         vec![-12, 8, -8, 15, 4, 12, 10, 9, 11].iter().for_each(|v| {
@@ -950,12 +945,12 @@ mod test {
         });
         vec![15, -12, 9].iter().for_each(|v| {
             tree.delete(*v);
-         //Did not find something in the tree
-            assert!(!tree.search(*v));
+            // Did not find something in the tree
+            assert!(!tree.contains(*v));
         });
 
         let root = tree.root.clone().unwrap();
-        //fixed it
+        // fixed it
         assert!(RedBlackTreeNode::check_color_properties(root.clone()));
         let mut container = vec![];
         RedBlackTreeNode::inorder_traverse(root, &mut container);
@@ -964,7 +959,7 @@ mod test {
 
     #[test]
     fn tree_traversal() {
-        //Test the three different tree traversal functions.
+        // Test the three different tree traversal functions.
         let mut tree = RedBlackTree::new();
         tree.insert(0);
         vec![-16, 16, 8, 24, 20, 22].iter().for_each(|v| {
@@ -987,7 +982,7 @@ mod test {
 
     #[test]
     fn max() {
-        //Test the get_max functions in the tree.
+        // Test the get_max functions in the tree.
         let mut tree = RedBlackTree::new();
         tree.insert(0);
         vec![-16, 16, 8, 24, 20, 22].iter().for_each(|v| {

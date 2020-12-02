@@ -11,7 +11,7 @@ use std::rc::Rc;
 use std::cmp::max;
 use std::fmt;
 
-/// Provides query functions for nodes
+/// Provide query functions for nodes
 pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
     /// Get left child node
     fn get_left(&self) -> &Option<Rc<RefCell<Self>>>;
@@ -22,7 +22,7 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
     /// Get data from current node
     fn get_data(&self) -> T;
 
-    /// Returns the height of current node, which will be called by
+    /// Return the height of current node, which will be called by
     /// [QueryableTree.height](trait.QueryableTree.html#method.height)
     fn height(&self) -> usize {
         let left_height = self.get_left().as_ref().map(
@@ -34,7 +34,7 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
         max(left_height, right_height) + 1
     }
 
-    /// Returns the number of leaves, which will be called by
+    /// Return the number of leaves, which will be called by
     /// [QueryableTree.count_leaves](trait.QueryableTree.html#method.count_leaves)
     fn count_leaves(&self) -> usize {
         match self.get_left() {
@@ -51,7 +51,7 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
         }
     }
 
-    /// Printing nodes [inorder](https://en.wikipedia.org/wiki/Tree_traversal#In-order_(LNR))
+    /// Print nodes [inorder](https://en.wikipedia.org/wiki/Tree_traversal#In-order_(LNR))
     /// , which will be called by
     /// [QueryableTree.print_inorder](trait.QueryableTree.html#method.print_inorder)
     fn print_inorder(&self) {
@@ -64,7 +64,7 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
         }
     }
 
-    /// Returns the minimum value of current node, which will be called by
+    /// Return the minimum value of current node, which will be called by
     /// [QueryableTree.min](trait.QueryableTree.html#method.min)
     fn min(&self) -> T {
         self.get_left().as_ref().map_or(
@@ -73,7 +73,7 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
         )
     }
 
-    /// Returns the maximum value of current node, which will be called by
+    /// Return the maximum value of current node, which will be called by
     /// [QueryableTree.max](trait.QueryableTree.html#method.max)
     fn max(&self) -> T {
         self.get_right().as_ref().map_or(
@@ -82,7 +82,7 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
         )
     }
 
-    /// Determines whether the node and its successors contains given value,
+    /// Determine whether the node and its successors contains given value,
     /// which will be called by
     /// [QueryableTree.contains](trait.QueryableTree.html#method.contains)
     fn contains(&self, value: T) -> bool {
@@ -99,7 +99,7 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
         }
     }
 
-    /// Returns the length of the current node,
+    /// Return the length of the current node,
     /// which will be called by
     /// [QueryableTree.len](trait.QueryableTree.html#method.len)
     fn len(&self) -> usize {
@@ -113,13 +113,13 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
     }
 }
 
-/// Provides query functions for trees
+/// Provide query functions for trees
 ///
 /// `QTN` means [QueryableTreeNode](trait.QueryableTreeNode.html)
 pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
     fn get_root(&self) -> &Option<Rc<RefCell<QTN>>>;
 
-    /// Returns the number of leaves.
+    /// Return the number of leaves.
     ///
     /// # Example
     ///
@@ -147,7 +147,7 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         }
     }
 
-    /// Returns the height of tree.
+    /// Return the height of tree.
     ///
     /// # Example
     ///
@@ -167,7 +167,7 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         }
     }
 
-    /// Printing tree [inorder](https://en.wikipedia.org/wiki/Tree_traversal#In-order_(LNR))
+    /// Print tree [inorder](https://en.wikipedia.org/wiki/Tree_traversal#In-order_(LNR))
     ///
     /// # Example
     ///
@@ -193,7 +193,7 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         }
     }
 
-    /// Determines whether the tree is empty
+    /// Determine whether the tree is empty
     ///
     /// # Example
     ///
@@ -213,7 +213,7 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         }
     }
 
-    /// Returns the minimum value of the tree
+    /// Return the minimum value of the tree
     ///
     /// # Example
     ///
@@ -237,7 +237,7 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         }
     }
 
-    /// Returns the maximum value of the tree
+    /// Return the maximum value of the tree
     ///
     /// # Example
     ///
@@ -261,7 +261,7 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         }
     }
 
-    /// Determines whether the tree contains given value
+    /// Determine whether the tree contains given value
     ///
     /// # Example
     ///
@@ -281,7 +281,7 @@ pub trait QueryableTree<T: Ord + Copy + fmt::Debug, QTN: QueryableTreeNode<T>> {
         }
     }
 
-    /// Returns the length of the tree
+    /// Return the length of the tree
     ///
     /// # Example
     ///
