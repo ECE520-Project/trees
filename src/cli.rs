@@ -76,7 +76,7 @@ pub fn run_cli(){
 
             println!("testing else if: you're in rbt branch;");
             
-            let mut rbt = RedBlackTree::new(0); //change to empty tree
+            let mut rbt = RedBlackTree::new();
             match operation.unwrap().to_lowercase().as_str() {
                 "insert"  => rbt.insert(value),
                 "delete" => rbt.delete(value),
