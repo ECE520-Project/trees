@@ -6,8 +6,8 @@ use trees::rbtree::RedBlackTree;
 
 
 const SAMPLE_SIZE: usize = 10;
-const TREE_SIZE: [i32; 5] = [10_000, 40_000, 70_000, 100_000, 130_000];
-// const TREE_SIZE: [i32; 5] = [100, 400, 700, 1000, 1300];
+// const TREE_SIZE: [i32; 5] = [10_000, 40_000, 70_000, 100_000, 130_000];
+const TREE_SIZE: [i32; 5] = [100, 400, 700, 1000, 1300];
 
 
 fn benchmark_bst(tree_size: i32) {
@@ -20,16 +20,16 @@ fn benchmark_bst(tree_size: i32) {
     }
 }
 
-fn criterion_benchmark_bst(c: &mut Criterion) {
-    let mut group = c.benchmark_group("BST");
-    group.sample_size(SAMPLE_SIZE);
-    for (idx, size) in TREE_SIZE.iter().enumerate() {
-        group.bench_function(
-            idx.to_string(),
-            |b| b.iter(|| benchmark_bst(black_box(*size)))
-        );
-    }
-}
+// fn criterion_benchmark_bst(c: &mut Criterion) {
+//     let mut group = c.benchmark_group("BST");
+//     group.sample_size(SAMPLE_SIZE);
+//     for (idx, size) in TREE_SIZE.iter().enumerate() {
+//         group.bench_function(
+//             idx.to_string(),
+//             |b| b.iter(|| benchmark_bst(black_box(*size)))
+//         );
+//     }
+// }
 
 fn benchmark_avl(tree_size: i32) {
     let mut avl = AVLTree::new();
@@ -41,20 +41,19 @@ fn benchmark_avl(tree_size: i32) {
     }
 }
 
-fn criterion_benchmark_avl(c: &mut Criterion) {
-    let mut group = c.benchmark_group("AVL");
-    group.sample_size(SAMPLE_SIZE);
-    for (idx, size) in TREE_SIZE.iter().enumerate() {
-        group.bench_function(
-            idx.to_string(),
-            |b| b.iter(|| benchmark_bst(black_box(*size)))
-        );
-    }
-}
+// fn criterion_benchmark_avl(c: &mut Criterion) {
+//     let mut group = c.benchmark_group("AVL");
+//     group.sample_size(SAMPLE_SIZE);
+//     for (idx, size) in TREE_SIZE.iter().enumerate() {
+//         group.bench_function(
+//             idx.to_string(),
+//             |b| b.iter(|| benchmark_bst(black_box(*size)))
+//         );
+//     }
+// }
 
 fn benchmark_rbt(tree_size: i32) {
-    // let mut rbt = RedBlackTree::new();
-    let mut rbt = BinarySearchTree::new();
+    let mut rbt = RedBlackTree::new();
     for v in 0..tree_size {
         rbt.insert(v);
     }
@@ -63,16 +62,16 @@ fn benchmark_rbt(tree_size: i32) {
     }
 }
 
-fn criterion_benchmark_rbt(c: &mut Criterion) {
-    let mut group = c.benchmark_group("RBT");
-    group.sample_size(SAMPLE_SIZE);
-    for (idx, size) in TREE_SIZE.iter().enumerate() {
-        group.bench_function(
-            idx.to_string(),
-            |b| b.iter(|| benchmark_bst(black_box(*size)))
-        );
-    }
-}
+// fn criterion_benchmark_rbt(c: &mut Criterion) {
+//     let mut group = c.benchmark_group("RBT");
+//     group.sample_size(SAMPLE_SIZE);
+//     for (idx, size) in TREE_SIZE.iter().enumerate() {
+//         group.bench_function(
+//             idx.to_string(),
+//             |b| b.iter(|| benchmark_bst(black_box(*size)))
+//         );
+//     }
+// }
 
 fn bench_compare(c: &mut Criterion) {
     let mut group = c.benchmark_group("Compare");
@@ -86,6 +85,7 @@ fn bench_compare(c: &mut Criterion) {
             BenchmarkId::new("AVL", idx), size,
             |b, i| b.iter(|| benchmark_avl(*i))
         );
+        // FIXME: memory leak, uncomment following code to see the difference
         group.bench_with_input(
             BenchmarkId::new("RBT", idx), size,
             |b, i| b.iter(|| benchmark_rbt(*i))
