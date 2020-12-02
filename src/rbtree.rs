@@ -677,9 +677,6 @@ impl<T: Ord + Copy + fmt::Debug> QueryableTree<T, RedBlackTreeNode<T>> for RedBl
 }
 
 impl<T: Ord + Copy + fmt::Debug> RedBlackTree<T> {
-    pub fn new1() -> Self {
-        Self { root: None }
-    }
     /// Create a new Red-black Tree
     ///
     /// # Example
@@ -687,19 +684,32 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTree<T> {
     /// ```
     /// use trees::rbtree::RedBlackTree;
     ///
-    /// let mut rbt = RedBlackTree::new();
+    /// let mut rbt: RedBlackTree<i32> = RedBlackTree::new();
     /// ```
-    pub fn new2(data: T) -> Self {
-        Self {
-            root: Some(Rc::new(RefCell::new(RedBlackTreeNode {
-                data,
-                color: NodeColor::Black,
-                parent: None,
-                left: None,
-                right: None,
-            }))),
-        }
+    pub fn new() -> Self {
+        Self { root: None }
     }
+
+    // /// Create a new Red-black Tree
+    // ///
+    // /// # Example
+    // ///
+    // /// ```
+    // /// use trees::rbtree::RedBlackTree;
+    // ///
+    // /// let mut rbt = RedBlackTree::new_from_data(3);
+    // /// ```
+    // pub fn new_from_data(data: T) -> Self {
+    //     Self {
+    //         root: Some(Rc::new(RefCell::new(RedBlackTreeNode {
+    //             data,
+    //             color: NodeColor::Black,
+    //             parent: None,
+    //             left: None,
+    //             right: None,
+    //         }))),
+    //     }
+    // }
 
     /// Insert a new value to the tree
     ///
@@ -771,7 +781,8 @@ mod test {
     //""Test that the rotate_left and rotate_right functions work."""
     // Make a tree to test on
     fn rotations() {
-        let mut tree = RedBlackTree::new2(0);
+        let mut tree = RedBlackTree::new();
+        tree.insert(0);
         {
             let root = tree.root.clone().unwrap();
             root.borrow_mut().left = Some(RedBlackTreeNode::new(
@@ -810,7 +821,8 @@ mod test {
             ));
         }
         // Make the left rotation
-        let left_rot = RedBlackTree::new2(10);
+        let mut left_rot = RedBlackTree::new();
+        left_rot.insert(10);
         {
             let root = left_rot.root.clone().unwrap();
             root.borrow_mut().left = Some(RedBlackTreeNode::new(
@@ -860,12 +872,14 @@ mod test {
     fn insert() {
         //Test the insert() method of the tree correctly 
         //balances, colors and inserts.
-        let mut tree = RedBlackTree::new2(0);
+        let mut tree = RedBlackTree::new();
+        tree.insert(0);
         vec![8, -8, 4, 12, 10, 11].iter().for_each(|v| {
             tree.insert(*v);
         });
 
-        let ans = RedBlackTree::new2(0);
+        let mut ans = RedBlackTree::new();
+        ans.insert(0);
         {
             let root = ans.root.clone().unwrap();
             root.borrow_mut().left = Some(RedBlackTreeNode::new(
@@ -910,7 +924,8 @@ mod test {
     #[test]
     fn insert_and_search() {
         //Test searching through the tree for values.
-        let mut tree = RedBlackTree::new2(0);
+        let mut tree = RedBlackTree::new();
+        tree.insert(0);
         vec![8, -8, 4, 12, 10, 11].iter().for_each(|v| {
             tree.insert(*v);
         });
@@ -928,7 +943,8 @@ mod test {
     fn insert_delete() {
         //Test the insert() and delete() method of the tree, verifying the
         //insertion，deletion of elements, and the balancing of the tree.
-        let mut tree = RedBlackTree::new2(0);
+        let mut tree = RedBlackTree::new();
+        tree.insert(0);
         vec![-12, 8, -8, 15, 4, 12, 10, 9, 11].iter().for_each(|v| {
             tree.insert(*v);
         });
@@ -949,7 +965,8 @@ mod test {
     #[test]
     fn tree_traversal() {
         //Test the three different tree traversal functions.
-        let mut tree = RedBlackTree::new2(0);
+        let mut tree = RedBlackTree::new();
+        tree.insert(0);
         vec![-16, 16, 8, 24, 20, 22].iter().for_each(|v| {
             tree.insert(*v);
         });
@@ -971,7 +988,8 @@ mod test {
     #[test]
     fn max() {
         //Test the get_max functions in the tree.
-        let mut tree = RedBlackTree::new2(0);
+        let mut tree = RedBlackTree::new();
+        tree.insert(0);
         vec![-16, 16, 8, 24, 20, 22].iter().for_each(|v| {
             tree.insert(*v);
         });
@@ -981,7 +999,7 @@ mod test {
 
     #[test]
     fn insert_delete_inorder() {
-        let mut tree = RedBlackTree::new1();
+        let mut tree = RedBlackTree::new();
         let tree_size = 1000;
         for v in 0..tree_size {
             tree.insert(v);
@@ -994,7 +1012,7 @@ mod test {
 
     #[test]
     fn insert_delete_reverse_inorder() {
-        let mut tree = RedBlackTree::new1();
+        let mut tree = RedBlackTree::new();
         let tree_size = 1000;
         for v in (0..tree_size).rev() {
             tree.insert(v);
@@ -1009,7 +1027,7 @@ mod test {
     fn insert_delete_random() {
         let seed = [0u8; 32];
         let mut rng: StdRng = SeedableRng::from_seed(seed);
-        let mut tree = RedBlackTree::new1();
+        let mut tree = RedBlackTree::new();
         let tree_size = 1000;
         let mut x: Vec<_> = (0..tree_size).collect();
         x.shuffle(&mut rng);

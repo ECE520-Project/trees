@@ -227,6 +227,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTree<T> {
     /// ```
     /// use trees::avltree::AVLTree;
     ///
+    /// let mut avl = AVLTree::new();
     /// avl.delete(1);
     /// ```
     pub fn delete(&mut self, val:T){
@@ -319,7 +320,6 @@ mod test {
         let tree_size = 1000;
         let mut x: Vec<_> = (0..tree_size).collect();
         x.shuffle(&mut rng);
-        println!("{:?}", x);
 
         for v in x.iter() {
             tree.insert(*v);
