@@ -86,16 +86,17 @@ pub trait QueryableTreeNode<T: Ord + Copy + fmt::Debug> {
     /// which will be called by
     /// [QueryableTree.contains](trait.QueryableTree.html#method.contains)
     fn contains(&self, value: T) -> bool {
-        if self.get_data() == value {
-            return true;
+        return if self.get_data() == value {
+            true
+        } else if self.get_data() < value {
+            self.get_right().as_ref().map(
+                |node| node.borrow().contains(value)
+            ).unwrap_or(false)
+        } else {
+            self.get_left().as_ref().map(
+                |node| node.borrow().contains(value)
+            ).unwrap_or(false)
         }
-        let left_found = self.get_left().as_ref().map(
-            |l| l.borrow().contains(value)
-        ).unwrap_or(false);
-        let right_found = self.get_right().as_ref().map(
-            |l| l.borrow().contains(value)
-        ).unwrap_or(false);
-        return left_found || right_found
     }
 
     /// Returns the length of the current node,

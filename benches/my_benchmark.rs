@@ -1,7 +1,13 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{black_box, BenchmarkId, criterion_group, criterion_main, Criterion};
 use trees::bstree::BinarySearchTree;
 use trees::base::QueryableTree;
 use trees::avltree::AVLTree;
+use trees::rbtree::RedBlackTree;
+
+
+const SAMPLE_SIZE: usize = 10;
+const TREE_SIZE: [i32; 5] = [10_000, 40_000, 70_000, 100_000, 130_000];
+// const TREE_SIZE: [i32; 5] = [100, 400, 700, 1000, 1300];
 
 
 fn benchmark_bst(tree_size: i32) {
@@ -15,13 +21,13 @@ fn benchmark_bst(tree_size: i32) {
 }
 
 fn criterion_benchmark_bst(c: &mut Criterion) {
-    let tree_sizes = [10_000, 40_000, 70_000, 100_000, 130_000];
-    for size in &tree_sizes {
-        c.bench_function(
-            "Binary Tree",
+    let mut group = c.benchmark_group("BST");
+    group.sample_size(SAMPLE_SIZE);
+    for (idx, size) in TREE_SIZE.iter().enumerate() {
+        group.bench_function(
+            idx.to_string(),
             |b| b.iter(|| benchmark_bst(black_box(*size)))
         );
-        benchmark_bst(*size)
     }
 }
 
@@ -36,15 +42,63 @@ fn benchmark_avl(tree_size: i32) {
 }
 
 fn criterion_benchmark_avl(c: &mut Criterion) {
-    let tree_sizes = [10_000, 40_000, 70_000, 100_000, 130_000];
-    for size in &tree_sizes {
-        c.bench_function(
-            "AVL Tree",
-            |b| b.iter(|| benchmark_avl(black_box(*size)))
+    let mut group = c.benchmark_group("AVL");
+    group.sample_size(SAMPLE_SIZE);
+    for (idx, size) in TREE_SIZE.iter().enumerate() {
+        group.bench_function(
+            idx.to_string(),
+            |b| b.iter(|| benchmark_bst(black_box(*size)))
         );
-        benchmark_avl(*size)
     }
 }
 
-criterion_group!(benches, criterion_benchmark_bst, criterion_benchmark_avl);
+fn benchmark_rbt(tree_size: i32) {
+    // let mut rbt = RedBlackTree::new();
+    let mut rbt = BinarySearchTree::new();
+    for v in 0..tree_size {
+        rbt.insert(v);
+    }
+    for v in 0..tree_size / 10 {
+        rbt.contains(v);
+    }
+}
+
+fn criterion_benchmark_rbt(c: &mut Criterion) {
+    let mut group = c.benchmark_group("RBT");
+    group.sample_size(SAMPLE_SIZE);
+    for (idx, size) in TREE_SIZE.iter().enumerate() {
+        group.bench_function(
+            idx.to_string(),
+            |b| b.iter(|| benchmark_bst(black_box(*size)))
+        );
+    }
+}
+
+fn bench_compare(c: &mut Criterion) {
+    let mut group = c.benchmark_group("Compare");
+    group.sample_size(SAMPLE_SIZE);
+    for (idx, size) in TREE_SIZE.iter().enumerate() {
+        group.bench_with_input(
+            BenchmarkId::new("BST", idx), size,
+            |b, i| b.iter(|| benchmark_bst(*i))
+        );
+        group.bench_with_input(
+            BenchmarkId::new("AVL", idx), size,
+            |b, i| b.iter(|| benchmark_avl(*i))
+        );
+        group.bench_with_input(
+            BenchmarkId::new("RBT", idx), size,
+            |b, i| b.iter(|| benchmark_rbt(*i))
+        );
+    }
+    group.finish();
+}
+
+criterion_group!(
+    benches,
+    // criterion_benchmark_bst,
+    // criterion_benchmark_rbt,
+    // criterion_benchmark_avl,
+    bench_compare,
+);
 criterion_main!(benches);

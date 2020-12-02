@@ -46,3 +46,22 @@ $ cargo doc
 ```
 
 then you can find the documentation in `./target/doc/trees/index.html`,  
+
+## Benchmarks
+
+Run the benchmarks
+
+```
+$ cargo bench
+```
+
+then you can find the bench results in `./target/criterion/Compare/report/index.html`
+
+To plot pretty figures, use the script `./benches/plot_benches.py`
+
+```
+$ cd benches
+$ python plot_benches.py
+```
+
+Then you can find the figures in `./target/criterion`
