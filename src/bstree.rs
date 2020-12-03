@@ -8,7 +8,7 @@
 //! use trees::base::QueryableTree;
 //! ```
 
-use std::cell::{RefCell, RefMut};
+use std::cell::{RefCell};
 use std::rc::Rc;
 use std::fmt;
 use std::cmp::{Ord, Ordering};
@@ -203,7 +203,7 @@ impl<T: Ord + Copy + fmt::Debug> BinarySearchTree<T> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use rand::{rngs::StdRng, RngCore, SeedableRng};
+    use rand::{rngs::StdRng, SeedableRng};
     use rand::seq::SliceRandom;
 
     #[test]

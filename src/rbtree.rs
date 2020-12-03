@@ -416,7 +416,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             }
         }
     }
-
+    #[allow(dead_code)]
      /// Check the coloring of the tree, and return true if the tree
      /// is colored in a way which matches these 5 Properties:
      ///   1. Each node is either red or black
@@ -512,7 +512,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
 
     // ------------------------------------------------------------
     // Here are some functions which are general to all binary search trees
-    
+    #[allow(dead_code)]
     fn search(node: RcRefRBTNode<T>, v: T) -> RBNodeLink<T> {
          //Search through the trees for data, returning its node if it is 
         //found and None otherwise.
@@ -594,7 +594,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             Some(v) => v.borrow().color,
         }
     }
-
+    #[allow(dead_code)]
     fn is_equal(left: RBNodeLink<T>, right: RBNodeLink<T>) -> bool {
         match (left, right) {
             (None, None) => true,
@@ -616,8 +616,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
     }
 
-    
-
+    #[allow(dead_code)]
     fn preorder_traverse(node: RcRefRBTNode<T>, container: &mut Vec<T>) {
         container.push(node.borrow().data);
         let left = node.borrow().left.clone();
@@ -629,7 +628,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             Self::preorder_traverse(right.unwrap(), container);
         }
     }
-
+    #[allow(dead_code)]
     fn inorder_traverse(node: RcRefRBTNode<T>, container: &mut Vec<T>) {
         let left = node.borrow().left.clone();
         if left.is_some() {
@@ -641,7 +640,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
             Self::inorder_traverse(right.unwrap(), container);
         }
     }
-
+    #[allow(dead_code)]
     fn postorder_traverse(node: RcRefRBTNode<T>, container: &mut Vec<T>) {
         let left = node.borrow().left.clone();
         if left.is_some() {
@@ -760,7 +759,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTree<T> {
             None => (),
         }
     }
-
+    #[allow(dead_code)]
     fn is_equal(&self, other: &RedBlackTree<T>) -> bool {
         RedBlackTreeNode::is_equal(self.root.clone(), other.root.clone())
     }
@@ -769,7 +768,7 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTree<T> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use rand::{rngs::StdRng, RngCore, SeedableRng};
+    use rand::{rngs::StdRng, SeedableRng};
     use rand::seq::SliceRandom;
 
     #[test]
