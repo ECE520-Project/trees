@@ -6,7 +6,6 @@ use trees::avltree::AVLTree;
 use trees::base::QueryableTree;
 
 use std::io::{stdin, stdout, Write};
-use std::process::exit;
 
 
 pub fn run_cli(){
@@ -30,27 +29,27 @@ pub fn run_cli(){
 
                 while stay_in_tree{
                     let mut operation = String::new();
-                    print!("op > ");
+                    print!("operation > ");
                     get_user_input(&mut operation);
 
                     match operation.to_lowercase().trim().split_whitespace().next().unwrap() {
                         "insert"  => {
                             let mut value = String::new();
                             print!("inserted value > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("inserting",&mut value);
                             avl.insert(val);
                         },
                         "delete" => {
                             let mut value = String::new();
                             print!("deleted value > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("deleting",&mut value);
                             avl.delete(val);  
                         },
     
                         "contains" => {
                             let mut value = String::new();
                             print!("value to search > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("searching for",&mut value);
                             avl.contains(val);
                         },
                         "height" => println!("{:?}",avl.height()),
@@ -75,7 +74,7 @@ pub fn run_cli(){
                         continue;
                     }
                     else{
-                        eprintln!("Invalid answer, exiting tree");
+                        println!("Invalid answer, exiting AVL tree");
                         break;
                     }
                 }
@@ -87,27 +86,27 @@ pub fn run_cli(){
 
                 while stay_in_tree{
                     let mut operation = String::new();
-                    print!("op > ");
+                    print!("operation > ");
                     get_user_input(&mut operation);
 
                     match operation.to_lowercase().trim().split_whitespace().next().unwrap() {
                         "insert"  => {
                             let mut value = String::new();
                             print!("inserted value > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("inserting",&mut value);
                             rbt.insert(val);
                         },
                         "delete" => {
                             let mut value = String::new();
                             print!("deleted value > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("deleting",&mut value);
                             rbt.delete(val);  
                         },
     
                         "contains" => {
                             let mut value = String::new();
                             print!("value to search > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("searching for",&mut value);
                             rbt.contains(val);
                         },
                         "height" => println!("{:?}",rbt.height()),
@@ -132,7 +131,7 @@ pub fn run_cli(){
                         continue;
                     }
                     else{
-                        eprintln!("Invalid answer, exiting tree");
+                        println!("Invalid answer, exiting RBT tree");
                         break;
                     }
                 }
@@ -145,27 +144,27 @@ pub fn run_cli(){
 
                 while stay_in_tree{
                     let mut operation = String::new();
-                    print!("op > ");
+                    print!("operation > ");
                     get_user_input(&mut operation);
 
                     match operation.to_lowercase().trim().split_whitespace().next().unwrap() {
                         "insert"  => {
                             let mut value = String::new();
                             print!("inserted value > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("inserting",&mut value);
                             bst.insert(val);
                         },
                         "delete" => {
                             let mut value = String::new();
                             print!("deleted value > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("deleting",&mut value);
                             bst.delete(val);  
                         },
     
                         "contains" => {
                             let mut value = String::new();
                             print!("value to search > ");
-                            let val = get_val(&mut value);
+                            let val = get_val("searching for",&mut value);
                             bst.contains(val);
                         },
                         "height" => println!("{:?}",bst.height()),
@@ -190,7 +189,7 @@ pub fn run_cli(){
                         continue;
                     }
                     else{
-                        eprintln!("Invalid answer, exiting tree");
+                        println!("Invalid answer, exiting BST tree");
                         break;
                     }
                 }
@@ -216,11 +215,11 @@ pub fn get_user_input(input: &mut String) {
     stdout().flush().expect("failed to flush");
     stdin().read_line(input).expect("failed to read from stdin");
 }
-pub fn get_val(mut value: &mut String)-> i32 {        
+pub fn get_val(op: &str, mut value: &mut String)-> i32 {        
     get_user_input(&mut value);
     let trimmed_val = value.trim();
     match trimmed_val.parse::<i32>(){
-        Ok(val) => println!("Value: '{}' will be inserted into the tree", val),
+        Ok(val) => println!("{} value: '{}' in tree",op, val),
         Err(..) => println!("this was not an integer number"),
     };
     let val: i32 = FromStr::from_str(trimmed_val).unwrap();
