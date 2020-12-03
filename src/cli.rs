@@ -29,7 +29,7 @@ pub fn run_cli(){
 
                 while stay_in_tree{
                     let mut operation = String::new();
-                    print!("op > ");
+                    print!("operation > ");
                     get_user_input(&mut operation);
 
                     match operation.to_lowercase().trim().split_whitespace().next().unwrap() {
@@ -86,7 +86,7 @@ pub fn run_cli(){
 
                 while stay_in_tree{
                     let mut operation = String::new();
-                    print!("op > ");
+                    print!("operation > ");
                     get_user_input(&mut operation);
 
                     match operation.to_lowercase().trim().split_whitespace().next().unwrap() {
@@ -144,7 +144,7 @@ pub fn run_cli(){
 
                 while stay_in_tree{
                     let mut operation = String::new();
-                    print!("op > ");
+                    print!("operation > ");
                     get_user_input(&mut operation);
 
                     match operation.to_lowercase().trim().split_whitespace().next().unwrap() {
