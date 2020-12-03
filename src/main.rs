@@ -26,17 +26,16 @@ pub fn main(){
         
             if answer.to_lowercase().contains("n") {
                 cli::hello();
+                cli::run_cli();
             }
             else if answer.as_str().to_lowercase().contains("y") {
                 avl_tree::main();
                 red_black_tree::main();
                 binary_search_tree::main();
             }
-        },
-        2 => eprint!("not enough arguments !"),
+            else{eprint!("Invalid choice , restart");}
 
-        3| 4 => cli::run_cli(),
-            
+        },    
         _ => eprint!("Invalid input , restart"),
     } 
 }
