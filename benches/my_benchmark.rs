@@ -1,4 +1,6 @@
-use criterion::{black_box, BenchmarkId, criterion_group, criterion_main, Criterion};
+
+
+use criterion::{BenchmarkId, criterion_group, criterion_main, Criterion};
 use trees::bstree::BinarySearchTree;
 use trees::base::QueryableTree;
 use trees::avltree::AVLTree;

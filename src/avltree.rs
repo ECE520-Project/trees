@@ -8,11 +8,11 @@
 //! use trees::base::QueryableTree;
 //! ```
 
-use std::cmp;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
-use std::cmp::{Ord, Ordering};
+
+use std::cmp::{Ord};
 
 use crate::base::{QueryableTreeNode, QueryableTree};
 
@@ -104,19 +104,19 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
     fn _get_height(node: Option<RcRefAVLTNode<T>>) -> usize {
         node.map_or(0, |n| n.borrow().height)
     }
-
+    #[allow(unused_mut)]
     fn _lr_rotate(mut root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T> {
         let left = root.borrow().left.clone().take().unwrap();
         root.borrow_mut().left = Some(Self::_left_rotate(left));
         return Self::_right_rotate(root)
     }
-
+    #[allow(unused_mut)]
     fn _rl_rotate(mut root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T> {
         let right = root.borrow().right.clone().take().unwrap();
         root.borrow_mut().right = Some(Self::_right_rotate(right));
         return Self::_left_rotate(root)
     }
-
+    #[allow(unused_mut)]
     fn _right_rotate(mut root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T> {
         let mut new_root = root.borrow().left.clone().unwrap();
         root.borrow_mut().left = new_root.borrow().right.clone().take();
@@ -131,7 +131,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         ) + 1;
         return new_root
     }
-
+    #[allow(unused_mut)]
     fn _left_rotate(mut root: RcRefAVLTNode<T>) -> RcRefAVLTNode<T> {
         let mut new_root = root.borrow().right.clone().unwrap();
         root.borrow_mut().right = new_root.borrow().left.clone().take();
@@ -146,7 +146,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         ) + 1;
         return new_root
     }
-
+    #[allow(unused_mut)]
     /// Insert a node, which will be called by [AVLTree](struct.AVLTree.html)
     fn insert(node: AVLNodeLink<T>, data: T) -> AVLNodeLink<T> {
         // insert the node
@@ -187,7 +187,7 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         ) + 1;
         Some(ret_node)
     }
-
+    #[allow(unused_variables)]
     /// Delete a node, which will be called by [AVLTree](struct.AVLTree.html)
     fn delete(node: AVLNodeLink<T>, data: T) -> AVLNodeLink<T> {
         // delete the node
