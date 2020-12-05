@@ -652,11 +652,44 @@ impl<T: Ord + Copy + fmt::Debug> RedBlackTreeNode<T> {
         }
         container.push(node.borrow().data);
     }
+
+    fn clear(&mut self) {
+        self.parent = None;
+        match self.left.take() {
+            None => {},
+            Some(node) => {
+                node.borrow_mut().clear();
+            }
+        }
+        self.left = None;
+        match self.right.take() {
+            None => {},
+            Some(node) => {
+                node.borrow_mut().clear();
+            }
+        }
+        self.right = None;
+    }
 }
 
 /// An implementation of [Red-black Tree](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree)
 pub struct RedBlackTree<T: Ord + Copy + fmt::Debug> {
     root: RBNodeLink<T>,
+}
+
+impl<T: Ord + Copy + fmt::Debug> Drop for RedBlackTree<T> {
+    fn drop(&mut self) {
+        match self.root.take() {
+            Some(node) => node.borrow_mut().clear(),
+            None => return
+        }
+    }
+}
+
+impl<T: Ord + Copy + fmt::Debug> Drop for RedBlackTreeNode<T> {
+    fn drop(&mut self) {
+        self.clear();
+    }
 }
 
 impl<T: Ord + Copy + fmt::Debug> QueryableTreeNode<T> for RedBlackTreeNode<T> {
