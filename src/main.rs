@@ -12,8 +12,6 @@ pub fn main(){
 
     let args: Vec<String> = env::args().collect();
 
-    let mut answer = String::new();
-    
     match args.len(){
         1 => {
             //no arguments passed: cargo run
@@ -22,7 +20,7 @@ pub fn main(){
             println!("Enter 'Yes' to view examples or 'No' to use the CLI");
 
             print!("Your choice > ");
-            cli::get_user_input(&mut answer);
+            let mut answer = cli::get_user_input();
         
             if answer.to_lowercase().contains("n") {
                 cli::hello();
