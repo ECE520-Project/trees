@@ -4,21 +4,22 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-def main():
-    tree_size = [10000, 40000, 70000, 100000, 130000]
-    tree_types = ["BST", "AVL", "RBT"]
-    marker = ['o', '*', '^']
-    
+MARKERS = ['o', '*', '^']
+
+
+def analysis(tree_size, tree_types, folder, overall_fig_name, compare_fig_name):
+    marker = MARKERS[:len(tree_types)]
+
     mean_values = []
     fig, all_ax = plt.subplots(3, 2, figsize=(12, 16))
     for i, size in enumerate(tree_size):
         data_to_plot = []
         for type in tree_types:
-            data = pandas.read_csv("../target/criterion/Compare/{}/{}/base/raw.csv".format(type, i))
+            data = pandas.read_csv("../target/criterion/{}/{}/{}/base/raw.csv".format(folder, type, i))
             times = np.array(data['sample_measured_value'].to_list())
-            delta_times = times[1:] - times[:-1]
+            # delta_times = times[1:] - times[:-1]
             counts = np.array(data['iteration_count'].to_list())
-            delta_counts = counts[1:] - counts[:-1]
+            # delta_counts = counts[1:] - counts[:-1]
             values = times / counts
             data_to_plot.append(values)
         mean_values.append([d.mean() for d in data_to_plot])
@@ -35,7 +36,8 @@ def main():
         # plt.show()
         # plt.savefig("../target/criterion/{}.png".format(size))
     all_ax[-1, -1].axis('off')
-    plt.savefig("../target/criterion/compare.png")
+    # plt.savefig("../target/criterion/compare.png")
+    plt.savefig("../target/criterion/{}.png".format(compare_fig_name))
     # plt.show()
     fig, ax = plt.subplots(figsize=(10, 8))
     mean_values = np.array(mean_values)
@@ -48,7 +50,17 @@ def main():
     ax.yaxis.set_tick_params(labelsize=13)
     plt.legend(loc="upper left", prop={'size': 20})
     # plt.show()
-    plt.savefig("../target/criterion/overall.png")
+    plt.savefig("../target/criterion/{}.png".format(overall_fig_name))
+
+
+def main():
+    tree_size = [10000, 40000, 70000, 100000, 130000]
+    tree_types = ["BST", "AVL", "RBT"]
+    analysis(tree_size, tree_types, "Compare_10Sample", "overall_10_sample", "compare_10_sample")
+    tree_types = ["AVL", "RBT"]
+    analysis(tree_size, tree_types, "Compare", "overall", "compare")
+    tree_types = ["AVL", "RBT"]
+    analysis(tree_size, tree_types, "Compare_insert_delete", "overall_insert_delete", "compare_insert_delete")
 
 
 if __name__ == '__main__':
