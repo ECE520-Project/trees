@@ -23,6 +23,22 @@ fn benchmark_bst(tree_size: i32) {
     }
 }
 
+fn benchmark_bst_insert_delete(tree_size: i32) {
+    let seed = [0u8; 32];
+    let mut rng: StdRng = SeedableRng::from_seed(seed);
+    let mut data: Vec<i32> = (0..tree_size).collect();
+    data.shuffle(&mut rng);
+    let sample = data.iter().choose_multiple(&mut rng, (tree_size / 10) as usize);
+
+    let mut bst = BinarySearchTree::new();
+    for v in &data {
+        bst.insert(*v);
+    }
+    for v in sample.iter() {
+        bst.delete(**v);
+    }
+}
+
 fn benchmark_avl(tree_size: i32) {
     let mut avl = AVLTree::new();
     for v in 0..tree_size {
@@ -133,6 +149,10 @@ fn bench_compare_insert_delete(c: &mut Criterion) {
     let mut group = c.benchmark_group("Compare_insert_delete");
     for (idx, size) in TREE_SIZE.iter().enumerate() {
         group.bench_with_input(
+            BenchmarkId::new("BST", idx), size,
+            |b, i| b.iter(|| benchmark_bst_insert_delete(*i))
+        );
+        group.bench_with_input(
             BenchmarkId::new("AVL", idx), size,
             |b, i| b.iter(|| benchmark_avl_insert_delete(*i))
         );
@@ -155,7 +175,7 @@ fn bench_compare_insert_delete(c: &mut Criterion) {
 criterion_group!(
     benches,
     bench_compare_all,
-    bench_compare_insert_delete,
     bench_compare,
+    bench_compare_insert_delete,
 );
 criterion_main!(benches);

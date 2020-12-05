@@ -59,7 +59,7 @@ def main():
     analysis(tree_size, tree_types, "Compare_10Sample", "overall_10_sample", "compare_10_sample")
     tree_types = ["AVL", "RBT"]
     analysis(tree_size, tree_types, "Compare", "overall", "compare")
-    tree_types = ["AVL", "RBT"]
+    tree_types = ["BST", "AVL", "RBT"]
     analysis(tree_size, tree_types, "Compare_insert_delete", "overall_insert_delete", "compare_insert_delete")
 
 
