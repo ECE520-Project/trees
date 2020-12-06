@@ -7,8 +7,9 @@ use std::io::{stdin, stdout, Write};
 
 
 fn avl_cli() {
-    println!("\n::...AVL Tree branch...::\n"); //for testing
+    println!("\n::...AVL Tree branch...::\n");
     let mut tree = AVLTree::<i32>::new();
+    list_of_operations();
 
     loop {
         print!("operation > ");
@@ -31,8 +32,20 @@ fn avl_cli() {
             "height" => println!("Height of tree: {:?}", tree.height()),
             "count" => println!("Number of leaves: {:?}", tree.count_leaves()),
             "length" => println!("Length: {:?}", tree.len()),
-            "min" => println!("Minimum Value: {:?}", tree.min().unwrap()),
-            "max" => println!("Maximum Value: {:?}", tree.max().unwrap()),
+            "min" => {
+                let min_val = tree.min();
+                match min_val {
+                    None => println!("It is an empty tree!"),
+                    Some(v) => println!("Minimum Value: {:?}", v),
+                }
+            },
+            "max" => {
+                let max_val = tree.max();
+                match max_val {
+                    None => println!("It is an empty tree!"),
+                    Some(v) => println!("Maximum Value: {:?}", v),
+                }
+            },
             "empty" => println!("Is the tree empty?: {:?}", tree.is_empty()),
             "print" => {print!("Your tree: ");
                 tree.print_inorder();},
@@ -45,8 +58,9 @@ fn avl_cli() {
 
 
 fn rbt_cli() {
-    println!("\n::...Red-Black Tree branch...::\n");//for testing
+    println!("\n::...Red-Black Tree branch...::\n");
     let mut tree = RedBlackTree::<i32>::new();
+    list_of_operations();
 
     loop {
         print!("operation > ");
@@ -69,8 +83,20 @@ fn rbt_cli() {
             "height" => println!("Height of tree: {:?}", tree.height()),
             "count" => println!("Number of leaves: {:?}", tree.count_leaves()),
             "length" => println!("Length: {:?}", tree.len()),
-            "min" => println!("Minimum Value: {:?}", tree.min().unwrap()),
-            "max" => println!("Maximum Value: {:?}", tree.max().unwrap()),
+            "min" => {
+                let min_val = tree.min();
+                match min_val {
+                    None => println!("It is an empty tree!"),
+                    Some(v) => println!("Minimum Value: {:?}", v),
+                }
+            },
+            "max" => {
+                let max_val = tree.max();
+                match max_val {
+                    None => println!("It is an empty tree!"),
+                    Some(v) => println!("Maximum Value: {:?}", v),
+                }
+            },
             "empty" => println!("Is the tree empty?: {:?}", tree.is_empty()),
             "print" => {print!("Your tree: ");
                 tree.print_inorder();},
@@ -83,8 +109,9 @@ fn rbt_cli() {
 
 
 fn bst_cli() {
-    println!("\n::...Binary-Search Tree branch...::\n");//for testing
+    println!("\n::...Binary-Search Tree branch...::\n");
     let mut tree = BinarySearchTree::<i32>::new();
+    list_of_operations();
 
     loop {
         print!("operation > ");
@@ -107,8 +134,20 @@ fn bst_cli() {
             "height" => println!("Height of tree: {:?}", tree.height()),
             "count" => println!("Number of leaves: {:?}", tree.count_leaves()),
             "length" => println!("Length: {:?}", tree.len()),
-            "min" => println!("Minimum Value: {:?}", tree.min().unwrap()),
-            "max" => println!("Maximum Value: {:?}", tree.max().unwrap()),
+            "min" => {
+                let min_val = tree.min();
+                match min_val {
+                    None => println!("It is an empty tree!"),
+                    Some(v) => println!("Minimum Value: {:?}", v),
+                }
+            },
+            "max" => {
+                let max_val = tree.max();
+                match max_val {
+                    None => println!("It is an empty tree!"),
+                    Some(v) => println!("Maximum Value: {:?}", v),
+                }
+            },
             "empty" => println!("Is the tree empty?: {:?}", tree.is_empty()),
             "print" => {print!("Your tree: ");
                 tree.print_inorder();},
@@ -123,7 +162,7 @@ fn bst_cli() {
 pub fn run_cli(){
     loop {
         println!("you can select a tree to start or print 'exit' to leave");
-        println!("Select a tree!.\n-AVL \n-BST \n-RBT or type 'help' to learn about the commands");
+        println!("Select a tree!\n-AVL \n-BST \n-RBT or type 'help' to learn about the commands");
         print!("input > ");
         let selected_tree = get_user_input();
 
@@ -147,7 +186,7 @@ pub fn run_cli(){
             },
             "exit" => break,
             _ => {
-                eprint!("{:?} is not a valid command or tree\n", selected_tree);
+                eprint!("Command not recognized. \n");
             }
         }
     }
@@ -199,8 +238,7 @@ pub fn hello(){
     println!(":::: Please enter the name of a tree followed by the wanted action and value or 'exit' to leave :::");
     println!("---------------------------------------------------------------------------------------------------\n");
     println!("Available trees: \n---------------- \n- AVL tree (avl) \n- Red-Black Tree (rbt)\n- Binary Search Tree (bst)\n");
-    println!("Availabe operations: \n------------------ \n- insert \n- delete \n- height \n- count \n- length \n- min \n- max \n- empty \n- contains \n- print\n");
+    println!("Availabe operations: \n------------------ \n- insert \n- delete \n- height \n- count \n- length \n- min \n- max \n- empty \n- contains/search \n- print\n");
     println!("How to use the CLI: ");
     println!("-------------------");
-    println!("use: [tree_name] [operation] [optional value] \nExample1: avl insert 5 \nExample2: avl print ")
 }

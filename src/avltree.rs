@@ -153,13 +153,15 @@ impl<T: Ord + Copy + fmt::Debug> AVLTreeNode<T> {
         let ret_node = match node {
             None => AVLTreeNode::new(data).unwrap(),
             Some(mut n) => {
-                if data < n.borrow().data {
+                let node_data = n.borrow().data;
+                if data < node_data  {
                     let left = n.borrow().left.clone();
                     n.borrow_mut().left = Self::insert(left, data);
-                } else {
+                } else if data > node_data {
                     let right = n.borrow().right.clone();
                     n.borrow_mut().right = Self::insert(right, data);
                 }
+                // else: data == node, nothing happens
                 n
             }
         };
