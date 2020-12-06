@@ -1,5 +1,3 @@
-
-
 use criterion::{BenchmarkId, criterion_group, criterion_main, Criterion};
 use trees::bstree::BinarySearchTree;
 use trees::base::QueryableTree;
@@ -65,7 +63,7 @@ fn benchmark_avl_insert_delete(tree_size: i32) {
     }
 }
 
-fn benchmark_rbt(tree_size: i32) -> RedBlackTree<i32> {
+fn benchmark_rbt(tree_size: i32) {
     let mut rbt = RedBlackTree::new();
     for v in 0..tree_size {
         rbt.insert(v);
@@ -73,10 +71,9 @@ fn benchmark_rbt(tree_size: i32) -> RedBlackTree<i32> {
     for v in 0..tree_size / 10 {
         rbt.contains(v);
     }
-    rbt
 }
 
-fn benchmark_rbt_insert_delete(tree_size: i32) -> RedBlackTree<i32> {
+fn benchmark_rbt_insert_delete(tree_size: i32) {
     let seed = [0u8; 32];
     let mut rng: StdRng = SeedableRng::from_seed(seed);
     let mut data: Vec<i32> = (0..tree_size).collect();
@@ -91,7 +88,6 @@ fn benchmark_rbt_insert_delete(tree_size: i32) -> RedBlackTree<i32> {
     for v in sample.iter() {
         rbt.delete(**v);
     }
-    rbt
 }
 
 fn bench_compare_all(c: &mut Criterion) {
@@ -109,13 +105,7 @@ fn bench_compare_all(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::new("RBT", idx), size,
             |b, i| {
-                let mut t: Vec<RedBlackTree<i32>> = Vec::new();
-                b.iter(|| t.push(benchmark_rbt(*i)));
-                for mut tt in t {
-                    for v in 0..*i {
-                        tt.delete(v);
-                    }
-                }
+                b.iter(|| benchmark_rbt(*i));
             }
         );
     }
@@ -132,13 +122,7 @@ fn bench_compare(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::new("RBT", idx), size,
             |b, i| {
-                let mut t: Vec<RedBlackTree<i32>> = Vec::new();
-                b.iter(|| t.push(benchmark_rbt(*i)));
-                for mut tt in t {
-                    for v in 0..*i {
-                        tt.delete(v);
-                    }
-                }
+                b.iter(|| benchmark_rbt(*i));
             }
         );
     }
@@ -159,13 +143,7 @@ fn bench_compare_insert_delete(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::new("RBT", idx), size,
             |b, i| {
-                let mut t: Vec<RedBlackTree<i32>> = Vec::new();
-                b.iter(|| t.push(benchmark_rbt_insert_delete(*i)));
-                for mut tt in t {
-                    for v in 0..*i {
-                        tt.delete(v);
-                    }
-                }
+                b.iter(|| benchmark_rbt_insert_delete(*i));
             }
         );
     }
