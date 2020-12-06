@@ -1,5 +1,3 @@
-
-use std::str::FromStr;
 use trees::bstree::BinarySearchTree;
 use trees::rbtree::RedBlackTree;
 use trees::avltree::AVLTree;
@@ -14,7 +12,7 @@ fn avl_cli() {
 
     loop {
         print!("operation > ");
-        let mut operation = get_user_input();
+        let operation = get_user_input();
 
         match operation.to_lowercase().trim() {
             "insert"  => {
@@ -52,7 +50,7 @@ fn rbt_cli() {
 
     loop {
         print!("operation > ");
-        let mut operation = get_user_input();
+        let operation = get_user_input();
 
         match operation.to_lowercase().trim() {
             "insert"  => {
@@ -90,7 +88,7 @@ fn bst_cli() {
 
     loop {
         print!("operation > ");
-        let mut operation = get_user_input();
+        let operation = get_user_input();
 
         match operation.to_lowercase().trim() {
             "insert"  => {
@@ -127,7 +125,7 @@ pub fn run_cli(){
         println!("you can select a tree to start or print 'exit' to leave");
         println!("Select a tree!.\n-AVL \n-BST \n-RBT or type 'help' to learn about the commands");
         print!("input > ");
-        let mut selected_tree = get_user_input();
+        let selected_tree = get_user_input();
 
         match selected_tree.to_lowercase().trim() {
             "avl" => {
@@ -165,7 +163,7 @@ pub fn get_user_input() -> String {
 pub fn get_val(op: &str)-> i32 {
     loop {
         print!("{} value > ", op);
-        let mut value = get_user_input();
+        let value = get_user_input();
         let trimmed_val = value.trim();
         match trimmed_val.parse::<i32>(){
             Ok(val) => {

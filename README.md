@@ -9,15 +9,15 @@ Promotional video [HERE](https://www.dropbox.com/s/u485c73z3vww7b0/ece522v2.mp4?
 ```rust
 use trees::prelude::*;
 
-let avl = AVLTree::new(2);
+let mut avl = AVLTree::new(2);
 avl.insert(0);
 avl.delete(0);
 
-let bst = BinarySearchTree::new();
+let mut bst = BinarySearchTree::new();
 bst.insert(0);
 bst.delete(0);
 
-let rbt = RedBlackTree::new(2);
+let mut rbt = RedBlackTree::new(2);
 rbt.insert(0);
 rbt.delete(0);
 
@@ -39,6 +39,22 @@ print!("print_inorder: ");
 bst.print_inorder();
 ```
 
+## Command Line Interface
+
+Run the command line interface using
+
+```
+$ cargo run
+```
+
+## Testing
+
+Run the tests using
+
+```
+$ cargo test
+```
+
 ## Documentation
 
 Building the documentation using
@@ -47,7 +63,7 @@ Building the documentation using
 $ cargo doc
 ```
 
-then you can find the documentation in `./target/doc/trees/index.html`,  
+then you can find the documentation in [./target/doc/trees/index.html](./target/doc/trees/index.html),  
 
 ## Benchmarks
 
@@ -57,13 +73,13 @@ Run the benchmarks
 $ cargo bench
 ```
 
-then you can find the bench results in `./target/criterion/Compare/report/index.html`
+You can find the bench results in [./target/criterion/Compare/report/index.html](./target/criterion/Compare/report/index.html)
 
-To plot pretty figures, use the script `./benches/plot_benches.py`
+To plot pretty figures, use the script [./benches/plot_benches.py](./benches/plot_benches.py)
 
 ```
 $ cd benches
 $ python plot_benches.py
 ```
 
-Then you can find the figures in `./target/criterion`
+You can find the figures in [./target/criterion](./target/criterion)
