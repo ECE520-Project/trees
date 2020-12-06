@@ -1,0 +1,11 @@
+group,function,value,throughput_num,throughput_type,sample_measured_value,unit,iteration_count
+Compare_10Sample,RBT,0,,,90174851.0,ns,34
+Compare_10Sample,RBT,0,,,178437973.0,ns,68
+Compare_10Sample,RBT,0,,,268067260.0,ns,102
+Compare_10Sample,RBT,0,,,359829371.0,ns,136
+Compare_10Sample,RBT,0,,,509523689.0,ns,170
+Compare_10Sample,RBT,0,,,806221628.0,ns,204
+Compare_10Sample,RBT,0,,,633017163.0,ns,238
+Compare_10Sample,RBT,0,,,715765827.0,ns,272
+Compare_10Sample,RBT,0,,,823134664.0,ns,306
+Compare_10Sample,RBT,0,,,907430741.0,ns,340

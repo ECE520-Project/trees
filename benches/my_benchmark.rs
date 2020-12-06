@@ -1,5 +1,3 @@
-
-
 use criterion::{BenchmarkId, criterion_group, criterion_main, Criterion};
 use trees::bstree::BinarySearchTree;
 use trees::base::QueryableTree;
@@ -125,11 +123,6 @@ fn bench_compare(c: &mut Criterion) {
             BenchmarkId::new("RBT", idx), size,
             |b, i| {
                 b.iter(|| benchmark_rbt(*i));
-                // for mut tt in t {
-                //     for v in 0..*i {
-                //         tt.delete(v);
-                //     }
-                // }
             }
         );
     }
