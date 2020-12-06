@@ -20,7 +20,7 @@ pub fn main(){
             println!("Enter 'Yes' to view examples or 'No' to use the CLI");
 
             print!("Your choice > ");
-            let mut answer = cli::get_user_input();
+            let answer = cli::get_user_input();
         
             if answer.to_lowercase().contains("n") {
                 cli::hello();
